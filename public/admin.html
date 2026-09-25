@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>World Hemp History | 管理画面</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#efe8d3; --surface:#fffdf6; --surface-2:#f7f1de;
+    --ink:#241f15; --ink-muted:#6b5f47; --border:#d6cba8;
+    --primary:#2f5233; --primary-dark:#1c3620; --primary-soft:#dde6d6;
+    --accent:#c9962b; --accent-soft:#f3e4bf;
+    --danger:#a13d2f; --danger-soft:#f6ded9;
+    --shadow:0 6px 20px rgba(28,54,32,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:'Work Sans',system-ui,-apple-system,sans-serif;margin:0;line-height:1.6;padding-bottom:60px;}
+  h1,h2{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0;}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+
+  header{padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:26px;}
+  header .brand{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;color:var(--primary-dark);}
+  header .sub{color:var(--ink-muted);font-size:0.84rem;margin-top:4px;}
+
+  .login-box{max-width:360px;margin:60px auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:26px;box-shadow:var(--shadow);}
+  .login-box h2{font-size:1.2rem;color:var(--primary-dark);margin-bottom:14px;}
+  .login-box label{display:block;font-size:0.82rem;color:var(--ink-muted);margin-bottom:6px;}
+  .login-box input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.92rem;font-family:inherit;background:var(--surface);color:var(--ink);}
+  .login-box button{margin-top:14px;width:100%;}
+  .login-box .err{color:var(--danger);font-size:0.82rem;margin-top:10px;min-height:1.2em;}
+
+  button{background:var(--primary);color:#fff;border:none;padding:9px 16px;border-radius:999px;font-size:0.86rem;font-weight:600;cursor:pointer;font-family:inherit;}
+  button:hover{background:var(--primary-dark);}
+  button.ghost{background:none;color:var(--ink-muted);border:1px solid var(--border);}
+  button.ghost:hover{background:var(--surface-2);color:var(--ink);}
+  button.danger{background:var(--danger);}
+  button.danger:hover{background:#832f24;}
+  button:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  .toolbar .msg{font-size:0.82rem;color:var(--ink-muted);}
+
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:22px;}
+  .stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+  .stat-tile .n{font-family:'Fraunces',serif;font-size:1.4rem;color:var(--primary-dark);font-weight:700;}
+  .stat-tile .l{font-size:0.76rem;color:var(--ink-muted);}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  th,td{text-align:left;padding:10px 12px;font-size:0.84rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  th{background:var(--surface-2);color:var(--ink-muted);font-weight:600;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.04em;}
+  tr:last-child td{border-bottom:none;}
+  td.desc{max-width:260px;color:var(--ink-muted);}
+  td.actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:0.72rem;font-weight:600;}
+  .badge.active{background:var(--primary-soft);color:var(--primary-dark);}
+  .badge.pending_payment{background:var(--accent-soft);color:#6b4f14;}
+  .badge.expired{background:var(--surface-2);color:var(--ink-muted);}
+  .badge.suspended{background:var(--danger-soft);color:var(--danger);}
+  select{font-family:inherit;font-size:0.8rem;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--ink);}
+
+  .empty{color:var(--ink-muted);font-size:0.9rem;padding:30px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;}
+
+  .table-wrap{overflow-x:auto;}
+
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand">World Hemp History — 管理画面</div>
+    <div class="sub">この画面は検索エンジンにインデックスされません。管理者トークンを知っている人のみアクセスできます。URLは第三者に共有しないでください。</div>
+  </header>
+
+  <div class="login-box" id="loginBox">
+    <h2>管理者トークンでログイン</h2>
+    <label for="tokenInput">ADMIN_TOKEN(.envで設定した値)</label>
+    <input type="password" id="tokenInput" autocomplete="off" placeholder="••••••••" />
+    <button id="loginBtn" style="width:100%;">ログイン</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+
+  <div id="panel" hidden>
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="toolbar">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="refreshBtn">一覧を再読み込み</button>
+        <button class="ghost" id="refreshNewsBtn">ニュースを今すぐ更新</button>
+        <button class="ghost" id="logoutBtn">ログアウト</button>
+      </div>
+      <div class="msg" id="toolbarMsg"></div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="companyTable" hidden>
+        <thead>
+          <tr>
+            <th>企業名</th>
+            <th>カテゴリー</th>
+            <th>ステータス</th>
+            <th>申込日</th>
+            <th>掲載終了日</th>
+            <th>紹介文</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="companyBody"></tbody>
+      </table>
+      <div class="empty" id="emptyState" hidden>まだ掲載申込みがありません。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let adminToken = '';
+// 管理者トークンはこのページを開いている間だけJS変数として保持し、
+// localStorage等には保存しない(リロードすると再入力が必要)。
+
+const CATEGORY_LABELS = {
+  textile: '繊維・アパレル', food: '食品', construction: '建材',
+  cosmetics: '化粧品・スキンケア', cbd_wellness: 'CBD・ウェルネス', bioplastic: 'バイオプラスチック・工業素材',
+};
+const STATUS_LABELS = {
+  active: '掲載中', pending_payment: '支払い待ち', expired: '期限切れ', suspended: '停止中',
+};
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function fmtDate(iso){
+  if(!iso) return '—';
+  try{ return new Date(iso).toLocaleString('ja-JP'); }catch(e){ return iso; }
+}
+
+async function apiFetch(path, options = {}){
+  const res = await fetch(path, {
+    ...options,
+    headers: { 'x-admin-token': adminToken, 'Content-Type': 'application/json', ...(options.headers||{}) },
+  });
+  if(res.status === 401){ throw new Error('unauthorized'); }
+  const data = await res.json().catch(() => ({}));
+  if(!res.ok){ throw new Error(data.error || `HTTPエラー: ${res.status}`); }
+  return data;
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const val = document.getElementById('tokenInput').value.trim();
+  const err = document.getElementById('loginErr');
+  err.textContent = '';
+  if(!val){ err.textContent = 'トークンを入力してください。'; return; }
+  adminToken = val;
+  try{
+    await loadCompanies();
+    document.getElementById('loginBox').hidden = true;
+    document.getElementById('panel').hidden = false;
+  }catch(e){
+    adminToken = '';
+    err.textContent = e.message === 'unauthorized' ? 'トークンが正しくありません。' : `読み込みに失敗しました: ${e.message}`;
+  }
+});
+document.getElementById('tokenInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  adminToken = '';
+  document.getElementById('tokenInput').value = '';
+  document.getElementById('panel').hidden = true;
+  document.getElementById('loginBox').hidden = false;
+});
+
+document.getElementById('refreshBtn').addEventListener('click', () => loadCompanies());
+
+document.getElementById('refreshNewsBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('toolbarMsg');
+  msg.textContent = 'ニュースを更新しています…';
+  try{
+    const result = await apiFetch('/api/news/refresh', { method: 'POST' });
+    msg.textContent = `ニュース更新完了(${result.count}件)`;
+  }catch(e){
+    msg.textContent = `ニュース更新に失敗しました: ${e.message}`;
+  }
+});
+
+function renderStats(companies){
+  const counts = { active: 0, pending_payment: 0, expired: 0, suspended: 0 };
+  companies.forEach(c => { if(counts[c.status] != null) counts[c.status]++; });
+  const row = document.getElementById('statRow');
+  row.innerHTML = Object.entries(STATUS_LABELS).map(([key,label]) => `
+    <div class="stat-tile"><div class="n">${counts[key] || 0}</div><div class="l">${label}</div></div>
+  `).join('') + `<div class="stat-tile"><div class="n">${companies.length}</div><div class="l">合計</div></div>`;
+}
+
+function renderTable(companies){
+  const table = document.getElementById('companyTable');
+  const empty = document.getElementById('emptyState');
+  const body = document.getElementById('companyBody');
+  if(!companies.length){
+    table.hidden = true; empty.hidden = false; return;
+  }
+  table.hidden = false; empty.hidden = true;
+
+  const sorted = companies.slice().sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  body.innerHTML = sorted.map(c => `
+    <tr data-id="${escapeHtml(c.id)}">
+      <td><strong>${escapeHtml(c.name)}</strong><br/><span style="color:var(--ink-muted);font-size:0.76rem;">${escapeHtml(c.country || '')}</span></td>
+      <td>${escapeHtml(CATEGORY_LABELS[c.category] || c.category)}</td>
+      <td><span class="badge ${escapeHtml(c.status)}">${escapeHtml(STATUS_LABELS[c.status] || c.status)}</span></td>
+      <td>${fmtDate(c.createdAt)}</td>
+      <td>${fmtDate(c.listingEnd)}</td>
+      <td class="desc">${escapeHtml(c.description || '')}</td>
+      <td class="actions">
+        <select class="status-select">
+          ${Object.entries(STATUS_LABELS).map(([key,label]) => `<option value="${key}" ${c.status===key?'selected':''}>${label}</option>`).join('')}
+        </select>
+        <button class="ghost apply-status-btn">変更</button>
+        <button class="danger delete-btn">削除</button>
+      </td>
+    </tr>
+  `).join('');
+
+  body.querySelectorAll('tr').forEach(row => {
+    const id = row.dataset.id;
+    row.querySelector('.apply-status-btn').addEventListener('click', async () => {
+      const status = row.querySelector('.status-select').value;
+      const msg = document.getElementById('toolbarMsg');
+      try{
+        await apiFetch(`/api/admin/companies/${encodeURIComponent(id)}/status`, {
+          method: 'POST', body: JSON.stringify({ status }),
+        });
+        msg.textContent = 'ステータスを更新しました。';
+        await loadCompanies();
+      }catch(e){ msg.textContent = `更新に失敗しました: ${e.message}`; }
+    });
+    row.querySelector('.delete-btn').addEventListener('click', async () => {
+      if(!confirm('この掲載を完全に削除します。よろしいですか?')) return;
+      const msg = document.getElementById('toolbarMsg');
+      try{
+        await apiFetch(`/api/admin/companies/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        msg.textContent = '削除しました。';
+        await loadCompanies();
+      }catch(e){ msg.textContent = `削除に失敗しました: ${e.message}`; }
+    });
+  });
+}
+
+async function loadCompanies(){
+  const companies = await apiFetch('/api/admin/companies');
+  renderStats(companies);
+  renderTable(companies);
+  return companies;
+}
+</script>
+</body>
+</html>

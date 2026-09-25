@@ -1,0 +1,23 @@
+{
+  "name": "world-hemp-history",
+  "version": "1.0.0",
+  "description": "World Hemp History - hemp.pi 向け Pi Browser アプリ。世界の麻ニュース自動更新・歴史タイムライン・企業/プロダクト紹介コーナー",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "fetch-news": "node scripts/fetchNews.js",
+    "migrate": "node scripts/migrateJsonToDb.js",
+    "backup": "node scripts/backupDbToJson.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^2.7.0",
+    "dotenv": "^16.4.5",
+    "uuid": "^9.0.1",
+    "pg": "^8.12.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

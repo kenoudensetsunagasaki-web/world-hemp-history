@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>World Hemp History | プライバシーポリシー</title>
+<meta name="description" content="世界の産業用ヘンプに関する情報ポータル World Hemp History のプライバシーポリシー(日本語/English)" />
+</head>
+<body>
+<style>
+  :root{
+    --bg:#efe8d3; --surface:#fffdf6; --surface-2:#f7f1de;
+    --ink:#241f15; --ink-muted:#6b5f47; --border:#d6cba8;
+    --primary:#2f5233; --primary-dark:#1c3620; --primary-soft:#dde6d6;
+    --accent:#c9962b; --accent-soft:#f3e4bf;
+    --shadow:0 6px 20px rgba(28,54,32,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161a12; --surface:#1f251a; --surface-2:#242b1d;
+      --ink:#eee9d8; --ink-muted:#b6ad93; --border:#39412f;
+      --primary:#7fae7f; --primary-dark:#a9cba6; --primary-soft:#28331f;
+      --accent:#e0b45a; --accent-soft:#3a3117;
+      --shadow:0 10px 28px rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#161a12; --surface:#1f251a; --surface-2:#242b1d;
+    --ink:#eee9d8; --ink-muted:#b6ad93; --border:#39412f;
+    --primary:#7fae7f; --primary-dark:#a9cba6; --primary-soft:#28331f;
+    --accent:#e0b45a; --accent-soft:#3a3117;
+    --shadow:0 10px 28px rgba(0,0,0,0.45);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:'Work Sans',system-ui,-apple-system,sans-serif;margin:0;line-height:1.7;}
+  h1,h2{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0;text-wrap:balance;}
+  a{color:var(--primary-dark);}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px 70px;}
+
+  .leaf-icon{width:16px;height:16px;fill:currentColor;flex:none;}
+
+  header{padding:26px 0 22px;border-bottom:1px solid var(--border);margin-bottom:34px;}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:8px;font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;color:var(--primary-dark);}
+  .brand svg{width:20px;height:20px;fill:var(--primary);}
+  .lang-toggle{display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;}
+  .lang-toggle button{background:var(--surface);color:var(--ink-muted);border:none;padding:6px 14px;font-size:0.78rem;font-family:inherit;cursor:pointer;}
+  .lang-toggle button.active{background:var(--primary);color:#fff;}
+  .doc-title{font-size:clamp(1.6rem,4vw,2.1rem);color:var(--primary-dark);margin-top:16px;}
+  .doc-meta{font-size:0.82rem;color:var(--ink-muted);margin-top:8px;}
+
+  .notice{background:var(--accent-soft);color:var(--ink);font-size:0.84rem;padding:14px 16px;border-radius:10px;margin-bottom:30px;}
+
+  section.item{padding:22px 0;border-top:1px solid var(--border);}
+  section.item:first-of-type{border-top:none;padding-top:0;}
+  section.item h2{font-size:1.08rem;color:var(--primary-dark);display:flex;gap:10px;align-items:baseline;}
+  section.item h2 .num{color:var(--accent);font-size:0.85rem;font-weight:700;font-family:'Work Sans',sans-serif;}
+  section.item p{margin:10px 0 0;color:var(--ink);font-size:0.94rem;}
+  section.item p+p{margin-top:8px;}
+  section.item ul{margin:10px 0 0;padding-left:20px;color:var(--ink);font-size:0.94rem;}
+  section.item li+li{margin-top:5px;}
+  section.item .muted{color:var(--ink-muted);}
+
+  .contact-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-top:8px;}
+  .contact-box a{font-weight:600;}
+
+  footer{margin-top:36px;padding-top:22px;border-top:1px solid var(--border);color:var(--ink-muted);font-size:0.78rem;}
+
+  [lang-block]{display:none;}
+  [lang-block].active{display:block;}
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="leaflet" d="M0,0 L1,-2 L5,-8 L3,-14 L7,-20 L4,-27 L8,-34 L5,-41 L8.5,-48 L5,-55 L7,-62 L4,-68 L5.5,-74 L2.5,-80 L0,-88 L-2.5,-80 L-5.5,-74 L-4,-68 L-7,-62 L-5,-55 L-8.5,-48 L-5,-41 L-8,-34 L-4,-27 L-7,-20 L-3,-14 L-5,-8 L-1,-2 Z"/>
+    <g id="hemp-leaf-shape">
+      <use href="#leaflet" transform="rotate(-62) scale(0.52)"/>
+      <use href="#leaflet" transform="rotate(-38) scale(0.74)"/>
+      <use href="#leaflet" transform="rotate(-18) scale(0.92)"/>
+      <use href="#leaflet" transform="rotate(0) scale(1)"/>
+      <use href="#leaflet" transform="rotate(18) scale(0.92)"/>
+      <use href="#leaflet" transform="rotate(38) scale(0.74)"/>
+      <use href="#leaflet" transform="rotate(62) scale(0.52)"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="brand-row">
+      <div class="brand">
+        <svg viewBox="-85 -95 170 100" aria-hidden="true"><use href="#hemp-leaf-shape"/></svg>
+        World Hemp History
+      </div>
+      <div class="lang-toggle">
+        <button type="button" data-lang="ja" class="active">日本語</button>
+        <button type="button" data-lang="en">English</button>
+      </div>
+    </div>
+    <h1 class="doc-title">
+      <span lang-block data-lang="ja" class="active">プライバシーポリシー</span>
+      <span lang-block data-lang="en">Privacy Policy</span>
+    </h1>
+    <div class="doc-meta">
+      <span lang-block data-lang="ja" class="active">最終更新日: 2026年9月18日</span>
+      <span lang-block data-lang="en">Last updated: September 18, 2026</span>
+    </div>
+  </header>
+
+  <div class="notice" lang-block data-lang="ja" class="active">
+    本ページはWorld Hemp Historyアプリのプライバシーポリシーです。Pi Networkブラウザおよび一般のWebブラウザの両方からご利用いただけます。
+  </div>
+  <div class="notice" lang-block data-lang="en">
+    This page is the Privacy Policy for the World Hemp History app, available both in the Pi Browser and standard web browsers.
+  </div>
+
+  <!-- ===================== JAPANESE ===================== -->
+  <div lang-block data-lang="ja" class="active">
+
+    <section class="item">
+      <h2><span class="num">1</span>運営者</h2>
+      <p>World Hemp Historyは、個人開発者(アキノリ)により運営されています。本サービスに関するお問い合わせは、下記「お問い合わせ」セクションのメールアドレスまでご連絡ください。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">2</span>取得する情報</h2>
+      <p>当サービスでは、以下の情報を取得する場合があります。</p>
+      <ul>
+        <li><strong>Pi Networkアカウント情報:</strong> Pi Browser経由でログイン・決済を行う際に、Pi SDK(<code>window.Pi</code>)を通じてPiユーザー名等の認証情報を取得します。決済処理自体はPi Network側のインフラで行われ、Piウォレットの秘密鍵等を当サービスが取得・保管することはありません。</li>
+        <li><strong>企業・プロダクト掲載申込フォームの入力情報:</strong> 企業名・カテゴリー・国/地域・紹介文・ウェブサイトURL等、掲載申込みの際にご入力いただく情報。</li>
+        <li><strong>お問い合わせフォームの入力情報:</strong> お名前・メールアドレス・お問い合わせ内容等。</li>
+      </ul>
+      <p class="muted">現時点で、Google Analytics等の第三者アクセス解析ツールは導入していません。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">3</span>利用目的</h2>
+      <p>取得した情報は、以下の目的にのみ利用します。</p>
+      <ul>
+        <li>企業・プロダクト掲載の申込み対応、および掲載料(Pi決済)の処理</li>
+        <li>お問い合わせへの回答</li>
+        <li>サービスの維持・不正利用の防止</li>
+      </ul>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">4</span>第三者への提供・外部サービスの利用</h2>
+      <p>取得した個人情報を、法令に基づく場合を除き、ご本人の同意なく第三者に販売・提供することはありません。サービス運営上、以下の外部サービスを利用しています。</p>
+      <ul>
+        <li><strong>Pi Network(Pi Platform API):</strong> Pi決済の承認・完了処理のため。</li>
+        <li><strong>NewsData.io:</strong> ニュース記事の自動収集のため。個人情報の送信は行いません。</li>
+        <li><strong>MyMemory Translation API:</strong> ニュース記事本文(英語)を他言語へ自動翻訳するため。送信されるのは記事本文のみで、利用者個人を特定する情報は送信されません。</li>
+      </ul>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">5</span>Cookie・ブラウザストレージ</h2>
+      <p>当サービス独自のトラッキングCookieは使用していません。Webフォントの読み込み(Google Fonts)等、外部サービスの技術的な仕組みにより最小限の通信が発生する場合があります。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">6</span>データの保管・セキュリティ</h2>
+      <p>取得した情報は、サービス運営に合理的に必要な範囲でサーバー上に保管し、不正アクセス等を防ぐため適切な管理に努めます。ただし、インターネット上の通信・保管において絶対的な安全性を保証するものではありません。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">7</span>お子様のプライバシー</h2>
+      <p>本サービスは18歳未満の方を対象としていません。18歳未満の方からの情報を意図的に取得することはありません。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">8</span>開示・訂正・削除のご請求</h2>
+      <p>ご自身の情報の開示・訂正・削除をご希望の場合は、下記のお問い合わせ先までご連絡ください。内容を確認のうえ、合理的な範囲で対応いたします。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">9</span>本ポリシーの変更</h2>
+      <p>本ポリシーは、サービス内容の変更等に伴い、予告なく改定される場合があります。重要な変更がある場合は、本ページ上でお知らせします。</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">10</span>お問い合わせ</h2>
+      <div class="contact-box">
+        <p>本ポリシーに関するご質問は、以下までご連絡ください。</p>
+        <p><a href="mailto:contact@hemp.pi">contact@hemp.pi</a></p>
+        <p class="muted">※上記は仮のお問い合わせ先です。運営者は正式なアドレスに差し替えてご利用ください。</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===================== ENGLISH ===================== -->
+  <div lang-block data-lang="en">
+
+    <section class="item">
+      <h2><span class="num">1</span>Who operates this service</h2>
+      <p>World Hemp History is operated by an individual developer (アキノリ / Akinori). For any questions about this service, please use the contact details in the "Contact" section below.</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">2</span>Information we collect</h2>
+      <p>We may collect the following information:</p>
+      <ul>
+        <li><strong>Pi Network account information:</strong> When you sign in or pay through Pi Browser, we receive authentication information such as your Pi username via the Pi SDK (<code>window.Pi</code>). Payments themselves are processed on Pi Network's own infrastructure; we never receive or store your Pi wallet's private keys.</li>
+        <li><strong>Company/product listing form data:</strong> Company name, category, country/region, description, and website URL submitted when applying for a listing.</li>
+        <li><strong>Contact form data:</strong> Name, email address, and message content, if you contact us.</li>
+      </ul>
+      <p class="muted">We do not currently use third-party analytics tools such as Google Analytics.</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">3</span>How we use information</h2>
+      <p>Collected information is used only for the following purposes:</p>
+      <ul>
+        <li>Processing company/product listing applications and the associated Pi payment</li>
+        <li>Responding to inquiries</li>
+        <li>Operating the service and preventing misuse</li>
+      </ul>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">4</span>Third parties and external services</h2>
+      <p>We do not sell or share your personal information with third parties without your consent, except as required by law. We use the following external services to operate the site:</p>
+      <ul>
+        <li><strong>Pi Network (Pi Platform API):</strong> to approve and complete Pi payments.</li>
+        <li><strong>NewsData.io:</strong> to automatically collect news articles. No personal information is sent.</li>
+        <li><strong>MyMemory Translation API:</strong> to automatically translate news article text (English) into other languages. Only article text is sent — no information that identifies an individual user.</li>
+      </ul>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">5</span>Cookies and browser storage</h2>
+      <p>We do not use our own tracking cookies. Minimal technical requests may occur as a byproduct of external services such as web font loading (Google Fonts).</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">6</span>Data storage and security</h2>
+      <p>Information we collect is stored on our servers only as long as reasonably necessary to operate the service, with reasonable safeguards against unauthorized access. No method of transmission or storage over the internet can be guaranteed to be completely secure.</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">7</span>Children's privacy</h2>
+      <p>This service is not directed to individuals under the age of 18, and we do not knowingly collect information from anyone under 18.</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">8</span>Access, correction, and deletion</h2>
+      <p>To request access to, correction of, or deletion of your information, please contact us using the details below. We will review and respond within a reasonable timeframe.</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">9</span>Changes to this policy</h2>
+      <p>This policy may be updated without prior notice as the service evolves. Material changes will be announced on this page.</p>
+    </section>
+
+    <section class="item">
+      <h2><span class="num">10</span>Contact</h2>
+      <div class="contact-box">
+        <p>Questions about this policy can be sent to:</p>
+        <p><a href="mailto:contact@hemp.pi">contact@hemp.pi</a></p>
+        <p class="muted">Note: this is a placeholder contact address. The operator should replace it with a real, monitored address before launch.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>World Hemp History — <span lang-block data-lang="ja" class="active">プライバシーポリシー</span><span lang-block data-lang="en">Privacy Policy</span></footer>
+</div>
+
+<script>
+  document.querySelectorAll('.lang-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('[lang-block]').forEach(el => {
+        el.classList.toggle('active', el.dataset.lang === lang);
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>World Hemp History | 世界の麻の歴史と今</title>
+<meta name="description" content="世界の麻(ヘンプ)にまつわる最新ニュース、1600年代から現代までの歴史タイムライン、世界中の企業・プロダクトを紹介するPi Networkアプリ" />
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#efe8d3; --surface:#fffdf6; --surface-2:#f7f1de;
+    --ink:#241f15; --ink-muted:#6b5f47; --border:#d6cba8;
+    --primary:#2f5233; --primary-dark:#1c3620; --primary-soft:#dde6d6;
+    --accent:#c9962b; --accent-soft:#f3e4bf;
+    --shadow:0 6px 20px rgba(28,54,32,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:'Work Sans',system-ui,-apple-system,sans-serif;margin:0;line-height:1.65;}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0;}
+  a{color:var(--primary-dark);}
+  img{max-width:100%;}
+  select{font-family:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:20px;}
+
+  .leaf-icon-sm{width:14px;height:14px;fill:currentColor;flex:none;}
+  .tag-leaf{width:10px;height:10px;fill:currentColor;vertical-align:-1px;margin-right:3px;flex:none;}
+
+  .notice{background:var(--accent-soft);color:var(--ink);font-size:0.82rem;text-align:center;padding:8px 16px;border-bottom:1px solid var(--border);}
+
+  header.site-header{position:sticky;top:0;z-index:50;background:rgba(246,243,234,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  .nav-inner{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;color:var(--primary-dark);}
+  .brand svg{width:22px;height:22px;flex:none;fill:var(--primary);}
+  nav.main-nav{display:flex;gap:22px;flex-wrap:wrap;}
+  nav.main-nav a{color:var(--ink);text-decoration:none;font-size:0.92rem;border-bottom:2px solid transparent;padding-bottom:2px;}
+  nav.main-nav a:hover{border-color:var(--accent);}
+  .nav-right{display:flex;align-items:center;gap:12px;}
+  .pi-status{font-size:0.78rem;color:var(--ink-muted);white-space:nowrap;}
+  .lang-switch{display:flex;align-items:center;gap:5px;}
+  .lang-switch svg{width:14px;height:14px;fill:var(--ink-muted);}
+  #langSelect{border:1px solid var(--border);background:var(--surface);color:var(--ink);padding:5px 8px;border-radius:8px;font-size:0.8rem;cursor:pointer;}
+
+  .hero{padding:56px 20px 0;overflow:hidden;}
+  .hero-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center;}
+  .hero h1{font-size:clamp(2rem,4vw,2.7rem);color:var(--primary-dark);letter-spacing:-0.01em;}
+  .hero .kicker{display:flex;align-items:center;gap:7px;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:10px;}
+  .hero p{color:var(--ink-muted);font-size:1.02rem;max-width:46ch;margin-top:14px;}
+  .hero .domain{display:inline-flex;align-items:center;gap:7px;margin-top:22px;padding:7px 14px;border-radius:999px;background:var(--primary-soft);color:var(--primary-dark);font-size:0.82rem;font-weight:600;}
+  .hero-art{width:100%;height:auto;max-width:300px;justify-self:center;}
+  .leaf-a{fill:var(--primary);opacity:0.96;}
+  .leaf-b{fill:var(--primary-dark);opacity:0.85;}
+  .leaf-c{fill:var(--accent);opacity:0.9;}
+  @media (max-width:720px){ .hero-inner{grid-template-columns:1fr;} .hero-art{max-width:220px;order:-1;} }
+
+  .garland{display:flex;justify-content:center;gap:6px;padding:34px 0 0;opacity:0.55;}
+  .garland svg{width:20px;height:20px;fill:var(--primary);}
+  .garland svg:nth-child(odd){transform:rotate(-14deg) translateY(3px);}
+  .garland svg:nth-child(even){transform:rotate(14deg) translateY(-2px);}
+
+  section{padding:52px 0;border-top:1px solid var(--border);}
+  .section-head{margin-bottom:26px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;}
+  .section-head .eyebrow{display:flex;align-items:center;gap:6px;font-size:0.76rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);font-weight:700;}
+  .section-head h2{font-size:1.5rem;color:var(--primary-dark);margin-top:6px;}
+  .section-head p{color:var(--ink-muted);margin:6px 0 0;max-width:56ch;font-size:0.95rem;}
+
+  .news-meta{font-size:0.82rem;color:var(--ink-muted);margin-bottom:16px;}
+  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;}
+  .news-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;}
+  .news-card .leaf-watermark{position:absolute;right:-14px;top:-14px;width:76px;height:76px;fill:var(--primary);opacity:0.07;pointer-events:none;}
+  .news-card .body{position:relative;padding:17px 16px;display:flex;flex-direction:column;gap:8px;}
+  .news-card h3{font-size:1rem;font-family:'Work Sans',sans-serif;font-weight:600;line-height:1.4;}
+  .news-card p{font-size:0.86rem;color:var(--ink-muted);margin:0;}
+  .news-card .mt-badge{align-self:flex-start;font-size:0.68rem;color:var(--primary-dark);background:var(--primary-soft);padding:2px 7px;border-radius:999px;}
+  .news-card .src{font-size:0.76rem;color:var(--ink-muted);display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:8px;}
+  .news-card .src a{color:var(--primary-dark);font-weight:600;text-decoration:none;}
+  .news-empty{color:var(--ink-muted);font-size:0.9rem;padding:24px;background:var(--surface-2);border-radius:10px;}
+
+  .timeline{position:relative;margin-left:6px;padding-left:26px;border-left:2px solid var(--primary-soft);}
+  .tl-item{position:relative;padding-bottom:28px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-leaf{position:absolute;left:-33px;top:2px;width:16px;height:16px;fill:var(--primary);}
+  .tl-year{font-weight:700;color:var(--accent);font-size:0.88rem;letter-spacing:0.02em;}
+  .tl-item h3{font-size:1.04rem;color:var(--primary-dark);margin:3px 0 6px;}
+  .tl-item p{margin:0;font-size:0.92rem;color:var(--ink);}
+
+  .cat-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+  .cat-filters button{border:1px solid var(--border);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:999px;font-size:0.83rem;cursor:pointer;font-family:inherit;}
+  .cat-filters button.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-bottom:26px;}
+  .company-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:17px;}
+  .company-card .company-logo{width:40px;height:40px;object-fit:contain;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);margin-bottom:8px;display:block;}
+  .company-card .cat-tag{display:inline-flex;align-items:center;font-size:0.7rem;background:var(--primary-soft);color:var(--primary-dark);padding:3px 9px 3px 8px;border-radius:999px;margin-bottom:8px;font-weight:600;}
+  .company-card h3{font-family:'Work Sans',sans-serif;font-weight:600;font-size:1.02rem;margin-bottom:5px;}
+  .company-card .country{font-size:0.76rem;color:var(--ink-muted);margin-bottom:6px;}
+  .company-card p{font-size:0.87rem;margin:0 0 10px;}
+  .company-card a.site-link{font-size:0.82rem;font-weight:600;text-decoration:none;}
+  .company-empty{color:var(--ink-muted);font-size:0.9rem;padding:24px;background:var(--surface-2);border-radius:10px;margin-bottom:20px;}
+
+  .cta-box{background:var(--primary-soft);border-radius:10px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;}
+  .cta-box .price{font-weight:700;color:var(--primary-dark);font-family:'Fraunces',serif;font-size:1.05rem;}
+  button.primary-btn{background:var(--primary);color:#fff;border:none;padding:11px 22px;border-radius:999px;font-size:0.92rem;font-weight:600;cursor:pointer;font-family:inherit;}
+  button.primary-btn:hover{background:var(--primary-dark);}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,22,14,0.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border-radius:12px;max-width:440px;width:100%;padding:24px;max-height:90vh;overflow-y:auto;}
+  .modal h3{font-size:1.15rem;color:var(--primary-dark);margin-bottom:4px;}
+  .modal label{display:block;font-size:0.82rem;margin:12px 0 4px;color:var(--ink-muted);}
+  .modal input,.modal select,.modal textarea{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:7px;font-size:0.9rem;font-family:inherit;background:var(--surface);color:var(--ink);}
+  .modal textarea{min-height:76px;resize:vertical;}
+  .modal .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+  .modal .modal-actions button.link-btn{background:none;border:none;color:var(--ink-muted);cursor:pointer;font-family:inherit;font-size:0.88rem;}
+  #formMsg{font-size:0.84rem;margin-top:10px;min-height:1.2em;}
+
+  footer{padding:30px 20px;text-align:center;color:var(--ink-muted);font-size:0.8rem;border-top:1px solid var(--border);}
+  footer .foot-brand{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px;color:var(--primary-dark);font-weight:600;}
+  footer .foot-brand svg{width:14px;height:14px;fill:var(--primary);}
+  footer .foot-links{display:flex;justify-content:center;gap:16px;margin-top:12px;flex-wrap:wrap;}
+  footer .foot-links button{background:none;border:none;color:var(--ink-muted);text-decoration:underline;cursor:pointer;font-size:0.78rem;font-family:inherit;padding:2px;}
+  footer .foot-links button:hover{color:var(--primary-dark);}
+
+  .stats-band{background:var(--primary-dark);color:#f3f1e6;}
+  .stats-inner{padding:44px 20px;}
+  .stats-head .eyebrow{color:var(--accent);}
+  .stats-head h2{color:#f3f1e6;margin-top:6px;font-size:1.35rem;}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:22px;}
+  .stat-tile{background:rgba(255,255,255,0.09);border-radius:12px;padding:18px;}
+  .stat-tile .value{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:700;line-height:1.2;}
+  .stat-tile .label{font-size:0.84rem;margin-top:6px;opacity:0.92;}
+  .stat-tile .caption{font-size:0.74rem;opacity:0.68;margin-top:5px;}
+  .stats-source{font-size:0.7rem;opacity:0.55;margin-top:20px;}
+
+  .cta-headline{font-family:'Fraunces',serif;font-weight:600;font-size:1.15rem;color:var(--primary-dark);margin-bottom:10px;}
+  .cta-benefits{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .cta-benefits li{display:flex;align-items:flex-start;gap:8px;font-size:0.88rem;color:var(--ink);}
+  .cta-benefits svg{width:14px;height:14px;fill:var(--primary);flex:none;margin-top:3px;}
+  .cta-price-row{font-size:0.85rem;color:var(--ink-muted);}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="leaflet" d="M0,0 L1,-2 L5,-8 L3,-14 L7,-20 L4,-27 L8,-34 L5,-41 L8.5,-48 L5,-55 L7,-62 L4,-68 L5.5,-74 L2.5,-80 L0,-88 L-2.5,-80 L-5.5,-74 L-4,-68 L-7,-62 L-5,-55 L-8.5,-48 L-5,-41 L-8,-34 L-4,-27 L-7,-20 L-3,-14 L-5,-8 L-1,-2 Z"/>
+    <g id="hemp-leaf-shape">
+      <use href="#leaflet" transform="rotate(-62) scale(0.52)"/>
+      <use href="#leaflet" transform="rotate(-38) scale(0.74)"/>
+      <use href="#leaflet" transform="rotate(-18) scale(0.92)"/>
+      <use href="#leaflet" transform="rotate(0) scale(1)"/>
+      <use href="#leaflet" transform="rotate(18) scale(0.92)"/>
+      <use href="#leaflet" transform="rotate(38) scale(0.74)"/>
+      <use href="#leaflet" transform="rotate(62) scale(0.52)"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="notice" data-i18n="noticeBanner"></div>
+
+<header class="site-header">
+  <div class="nav-inner">
+    <div class="brand"><svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>World Hemp History</div>
+    <nav class="main-nav">
+      <a href="#news" data-i18n="navNews"></a>
+      <a href="#timeline" data-i18n="navTimeline"></a>
+      <a href="#companies" data-i18n="navCompanies"></a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang-switch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 6 4 9s-1.5 6.5-4 9c-2.5-2.5-4-6-4-9s1.5-6.5 4-9Z"/></svg>
+        <select id="langSelect" aria-label="Language">
+          <option value="ja">日本語</option>
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="ko">한국어</option>
+          <option value="es">Español</option>
+        </select>
+      </div>
+      <span class="pi-status" id="piStatus">Pi未接続</span>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="kicker"><svg class="leaf-icon-sm" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>Global hemp, from root to record</div>
+      <h1>World Hemp History</h1>
+      <p data-i18n="heroDesc"></p>
+      <span class="domain"><svg class="leaf-icon-sm" viewBox="-85 -95 170 100" style="fill:var(--primary-dark)"><use href="#hemp-leaf-shape"/></svg><span data-i18n="domainBadge"></span></span>
+    </div>
+    <svg class="hero-art" viewBox="0 0 320 280" aria-hidden="true">
+      <use href="#hemp-leaf-shape" class="leaf-c" transform="translate(232,196) rotate(24) scale(1.05)"/>
+      <use href="#hemp-leaf-shape" class="leaf-b" transform="translate(108,200) rotate(-16) scale(0.85)"/>
+      <use href="#hemp-leaf-shape" class="leaf-a" transform="translate(172,95) rotate(3) scale(1.4)"/>
+    </svg>
+  </div>
+  <div class="garland">
+    <svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>
+    <svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>
+    <svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>
+    <svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>
+    <svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>
+  </div>
+</section>
+
+<section class="stats-band">
+  <div class="wrap stats-inner">
+    <div class="stats-head">
+      <div class="eyebrow"><svg class="leaf-icon-sm" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>Numbers</div>
+      <h2 data-i18n="statsTitle"></h2>
+      <p style="color:#f3f1e6;opacity:0.8;margin-top:6px;font-size:0.92rem;" data-i18n="statsDesc"></p>
+    </div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <p class="stats-source">Sources: Grand View Research, Industrial Hemp Market (2025) · Darshil Shah / Cambridge Centre for Natural Material Innovation, via Dezeen (2021)</p>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <section id="news">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow"><svg class="leaf-icon-sm" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg><span data-i18n="eyebrowLatest"></span></div>
+        <h2 data-i18n="sectionNewsTitle"></h2>
+        <p data-i18n="sectionNewsDesc"></p>
+      </div>
+    </div>
+    <div class="news-meta" id="newsMeta"></div>
+    <div class="news-grid" id="newsGrid"></div>
+  </section>
+
+  <section id="timeline">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow"><svg class="leaf-icon-sm" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg><span data-i18n="eyebrowHistory"></span></div>
+        <h2 data-i18n="sectionTimelineTitle"></h2>
+        <p data-i18n="sectionTimelineDesc"></p>
+      </div>
+    </div>
+    <div class="timeline" id="timelineList"></div>
+  </section>
+
+  <section id="companies">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow"><svg class="leaf-icon-sm" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg><span data-i18n="eyebrowDirectory"></span></div>
+        <h2 data-i18n="sectionCompaniesTitle"></h2>
+        <p data-i18n="sectionCompaniesDesc"></p>
+      </div>
+    </div>
+
+    <div class="cat-filters" id="catFilters"></div>
+    <div id="companyGrid" class="company-grid"></div>
+    <div class="company-empty" id="companyEmpty" style="display:none;"></div>
+
+    <div class="cta-box">
+      <div>
+        <div class="cta-headline" data-i18n="ctaHeadline"></div>
+        <ul class="cta-benefits" id="ctaBenefits"></ul>
+        <div class="cta-price-row"><span class="price" data-i18n="ctaPrice"></span> <span data-i18n="ctaDesc"></span></div>
+      </div>
+      <button class="primary-btn" id="openListingForm" data-i18n="ctaButton"></button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-brand"><svg viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>World Hemp History</div>
+  <span data-i18n="footerTagline"></span><br/>
+  <span data-i18n="footerNote"></span>
+  <div class="foot-links">
+    <button type="button" data-topic="about" class="info-link"></button>
+    <button type="button" data-topic="contact" class="info-link"></button>
+    <button type="button" data-topic="privacy" class="info-link"></button>
+    <button type="button" data-topic="terms" class="info-link"></button>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="infoModalOverlay">
+  <div class="modal">
+    <h3 id="infoModalTitle"></h3>
+    <p id="infoModalBody" style="font-size:0.9rem;color:var(--ink);white-space:pre-line;"></p>
+    <div class="modal-actions">
+      <button type="button" class="link-btn" id="closeInfoModal">×</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 data-i18n="modalTitle"></h3>
+    <form id="listingForm">
+      <label data-i18n="formName"></label>
+      <input type="text" name="name" required />
+
+      <label data-i18n="formCategory"></label>
+      <select name="category" id="categorySelect" required></select>
+
+      <label data-i18n="formCountry"></label>
+      <input type="text" name="country" data-i18n-ph="formCountryPh" />
+
+      <label data-i18n="formDesc"></label>
+      <textarea name="description" required data-i18n-ph="formDescPh"></textarea>
+
+      <label data-i18n="formWebsite"></label>
+      <input type="url" name="website" placeholder="https://" />
+
+      <label data-i18n="formLogo"></label>
+      <input type="url" name="logoUrl" placeholder="https://" data-i18n-ph="formLogoPh" />
+
+      <div id="formMsg"></div>
+
+      <div class="modal-actions">
+        <button type="button" class="link-btn" id="closeModal" data-i18n="formCancel"></button>
+        <button type="submit" class="primary-btn" data-i18n="formSubmit"></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+/* ===================== i18n data ===================== */
+const UI = {
+  ja:{navNews:'ニュース',navTimeline:'歴史タイムライン',navCompanies:'企業・プロダクト',piStatus:'Pi未接続',heroDesc:'世界の麻(ヘンプ)にまつわる最新ニュース、1600年代から現代までの歴史、そして世界中の企業・プロダクトを一つの場所で。',domainBadge:'hemp.pi ドメイン紐付け準備中',noticeBanner:'',eyebrowLatest:'Latest',sectionNewsTitle:'世界の麻ニュース',sectionNewsDesc:'産業用ヘンプに関する海外ニュースを自動収集し、数日おきに更新します。',readMore:'記事を読む →',eyebrowHistory:'History',sectionTimelineTitle:'麻の歴史タイムライン(1600年代〜現代)',sectionTimelineDesc:'大航海・植民地時代から産業革命、規制の時代を経て、現在の再評価に至るまでの流れをたどります。',eyebrowDirectory:'Directory',sectionCompaniesTitle:'企業・プロダクト紹介',sectionCompaniesDesc:'繊維、食品、建材、化粧品、CBD・ウェルネス、バイオ素材など、世界のヘンプ関連企業・プロダクトを紹介します。',filterAll:'すべて',ctaTitle:'あなたの企業・プロダクトを掲載しませんか?',ctaPrice:'10π / 2ヶ月',ctaDesc:'で掲載できます',ctaButton:'掲載を申し込む',emptyCompanies:'このカテゴリーの掲載企業はまだありません。',siteLink:'サイトを見る →',modalTitle:'企業・プロダクト掲載のお申し込み',formName:'企業・ブランド名 *',formCategory:'カテゴリー *',formCountry:'国・地域',formCountryPh:'例: Japan',formDesc:'紹介文 *',formDescPh:'事業内容やプロダクトの特徴を入力してください',formWebsite:'ウェブサイトURL',formLogo:'ロゴ画像URL(任意)',formLogoPh:'例: https://example.com/logo.png',formCancel:'キャンセル',formSubmit:'10πで掲載を申し込む',statsTitle:'数字で見る産業用ヘンプ',statsDesc:'急成長する世界市場と、環境面での高いポテンシャル。',ctaHeadline:'最初の掲載企業になりませんか?',ctaBenefit1:'成長率17.9%の急拡大市場でいち早く露出',ctaBenefit2:'日本語・英語・中国語・韓国語・スペイン語、5言語のユーザーにリーチ',ctaBenefit3:'掲載は2ヶ月10πから、Piで簡単決済',footerTagline:'hemp.pi(準備中)',footerNote:'本サイトは情報提供を目的としており、各国の法規制は地域により異なります。ご利用の地域の法律を必ずご確認ください。',machineTranslated:'自動翻訳',newsEmpty:'現在表示できるニュースがありません。次回の自動更新をお待ちください。',piAuthRequired:'Pi Browserでの認証が必要です。Pi Browserでこのアプリを開いてから、もう一度お試しください。',piBrowserOnly:'申し込みを受け付けました。Pi Browserで開いてお支払いを完了してください。',paymentComplete:'お支払いが完了しました。掲載が有効化されます。',paymentCancelled:'支払いがキャンセルされました。',paymentError:'支払いエラーが発生しました。',genericError:'処理中にエラーが発生しました。'},
+  en:{navNews:'News',navTimeline:'History Timeline',navCompanies:'Directory',piStatus:'Pi not connected',heroDesc:'The latest news on hemp worldwide, its history from the 1600s to today, and companies and products from around the world — all in one place.',domainBadge:'hemp.pi domain linking in progress',noticeBanner:'',eyebrowLatest:'Latest',sectionNewsTitle:'World Hemp News',sectionNewsDesc:'Industrial hemp news is collected automatically and refreshed every few days.',readMore:'Read article →',eyebrowHistory:'History',sectionTimelineTitle:'Hemp History Timeline (1600s–Today)',sectionTimelineDesc:"From the age of exploration and colonization, through industrial growth and prohibition, to today's renewed interest.",eyebrowDirectory:'Directory',sectionCompaniesTitle:'Companies & Products',sectionCompaniesDesc:'Discover hemp-related companies and products worldwide — textiles, food, construction, cosmetics, CBD & wellness, and bio-materials.',filterAll:'All',ctaTitle:'List your company or product',ctaPrice:'10π / 2 months',ctaDesc:'to get listed',ctaButton:'Apply to list',emptyCompanies:'No companies listed in this category yet.',siteLink:'Visit site →',modalTitle:'Apply for a company/product listing',formName:'Company / brand name *',formCategory:'Category *',formCountry:'Country / region',formCountryPh:'e.g. Japan',formDesc:'Description *',formDescPh:'Describe your business or product',formWebsite:'Website URL',formLogo:'Logo image URL (optional)',formLogoPh:'e.g. https://example.com/logo.png',formCancel:'Cancel',formSubmit:'Apply with 10π',statsTitle:'Industrial Hemp, By the Numbers',statsDesc:'A fast-growing global market with strong environmental potential.',ctaHeadline:'Be one of our founding listed companies',ctaBenefit1:'Early visibility in a market growing 17.9% a year',ctaBenefit2:'Reach users in 5 languages — Japanese, English, Chinese, Korean, and Spanish',ctaBenefit3:'Listings start at 10π for 2 months, paid easily with Pi',footerTagline:'hemp.pi (coming soon)',footerNote:'This site is for informational purposes only. Hemp regulations vary by country — please check the laws in your region.',machineTranslated:'Machine-translated',newsEmpty:'No news to show right now. Please check back after the next automatic update.',piAuthRequired:'Pi Browser authentication is required. Please open this app in Pi Browser and try again.',piBrowserOnly:'Your application was received. Open this app in Pi Browser to complete payment.',paymentComplete:'Payment complete. Your listing will be activated.',paymentCancelled:'Payment was cancelled.',paymentError:'A payment error occurred.',genericError:'Something went wrong.'},
+  zh:{navNews:'新闻',navTimeline:'历史年表',navCompanies:'企业目录',piStatus:'Pi 未连接',heroDesc:'汇集全球大麻相关的最新资讯、从17世纪至今的历史,以及世界各地的企业与产品。',domainBadge:'hemp.pi 域名绑定筹备中',noticeBanner:'',eyebrowLatest:'Latest',sectionNewsTitle:'全球大麻资讯',sectionNewsDesc:'自动收集工业大麻相关的海外新闻,每隔数日更新一次。',readMore:'阅读全文 →',eyebrowHistory:'History',sectionTimelineTitle:'大麻历史年表(17世纪至今)',sectionTimelineDesc:'从大航海与殖民时代,经过工业化与管制时期,到如今重新受到关注的历程。',eyebrowDirectory:'Directory',sectionCompaniesTitle:'企业与产品介绍',sectionCompaniesDesc:'涵盖纺织、食品、建材、化妆品、CBD与健康产品、生物材料等领域的全球大麻相关企业与产品。',filterAll:'全部',ctaTitle:'展示您的企业或产品',ctaPrice:'10π / 2个月',ctaDesc:'即可刊登',ctaButton:'申请刊登',emptyCompanies:'该分类暂无已刊登的企业。',siteLink:'访问网站 →',modalTitle:'申请刊登企业/产品',formName:'企业/品牌名称 *',formCategory:'分类 *',formCountry:'国家/地区',formCountryPh:'例:日本',formDesc:'简介 *',formDescPh:'请描述贵公司的业务或产品特点',formWebsite:'网站链接',formLogo:'徽标图片URL(可选)',formLogoPh:'例:https://example.com/logo.png',formCancel:'取消',formSubmit:'以10π申请刊登',statsTitle:'数字看工业大麻',statsDesc:'快速增长的全球市场,以及显著的环境潜力。',ctaHeadline:'成为首批入驻企业',ctaBenefit1:'在年增长率17.9%的市场中抢占先机',ctaBenefit2:'触达日语、英语、中文、韩语、西班牙语五种语言的用户',ctaBenefit3:'刊登费用低至2个月10π,使用Pi轻松支付',footerTagline:'hemp.pi(筹备中)',footerNote:'本网站仅供信息参考,各国大麻相关法规不同,请务必确认所在地区的法律规定。',machineTranslated:'机器翻译',newsEmpty:'暂无可显示的新闻,请等待下次自动更新。',piAuthRequired:'需要通过Pi Browser完成身份验证。请在Pi Browser中打开本应用后重试。',piBrowserOnly:'已收到申请。请在Pi Browser中打开以完成支付。',paymentComplete:'支付已完成,您的信息即将上线。',paymentCancelled:'支付已取消。',paymentError:'支付时发生错误。',genericError:'处理过程中发生错误。'},
+  ko:{navNews:'뉴스',navTimeline:'역사 타임라인',navCompanies:'기업 목록',piStatus:'Pi 미연결',heroDesc:'전 세계 대마 관련 최신 뉴스, 1600년대부터 현대까지의 역사, 그리고 세계 각국의 기업과 제품을 한곳에서.',domainBadge:'hemp.pi 도메인 연결 준비 중',noticeBanner:'',eyebrowLatest:'Latest',sectionNewsTitle:'세계 대마 뉴스',sectionNewsDesc:'산업용 대마 관련 해외 뉴스를 자동으로 수집하여 며칠 간격으로 업데이트합니다.',readMore:'기사 읽기 →',eyebrowHistory:'History',sectionTimelineTitle:'대마 역사 타임라인(1600년대~현대)',sectionTimelineDesc:'대항해·식민지 시대부터 산업화, 규제의 시대를 거쳐 오늘날 재조명되기까지의 흐름을 따라갑니다.',eyebrowDirectory:'Directory',sectionCompaniesTitle:'기업·제품 소개',sectionCompaniesDesc:'섬유, 식품, 건축자재, 화장품, CBD·웰니스, 바이오 소재 등 전 세계 대마 관련 기업과 제품을 소개합니다.',filterAll:'전체',ctaTitle:'귀사의 기업/제품을 소개해 보세요',ctaPrice:'10π / 2개월',ctaDesc:'로 등록 가능',ctaButton:'등록 신청',emptyCompanies:'이 카테고리에는 아직 등록된 기업이 없습니다.',siteLink:'사이트 방문 →',modalTitle:'기업·제품 등록 신청',formName:'기업/브랜드명 *',formCategory:'카테고리 *',formCountry:'국가/지역',formCountryPh:'예: Japan',formDesc:'소개글 *',formDescPh:'사업 내용이나 제품 특징을 입력해 주세요',formWebsite:'웹사이트 URL',formLogo:'로고 이미지 URL(선택)',formLogoPh:'예: https://example.com/logo.png',formCancel:'취소',formSubmit:'10π로 신청하기',statsTitle:'숫자로 보는 산업용 대마',statsDesc:'빠르게 성장하는 세계 시장과 뛰어난 환경적 잠재력.',ctaHeadline:'첫 번째 등록 기업이 되어보세요',ctaBenefit1:'연 17.9% 성장하는 시장에서 먼저 노출되는 기회',ctaBenefit2:'일본어·영어·중국어·한국어·스페인어 5개 언어 사용자에게 도달',ctaBenefit3:'2개월 10π부터, Pi로 간편하게 결제',footerTagline:'hemp.pi(준비 중)',footerNote:'본 사이트는 정보 제공을 목적으로 하며, 대마 관련 법규는 국가·지역마다 다릅니다. 해당 지역의 법률을 반드시 확인하세요.',machineTranslated:'기계 번역',newsEmpty:'현재 표시할 뉴스가 없습니다. 다음 자동 업데이트를 기다려 주세요.',piAuthRequired:'Pi Browser 인증이 필요합니다. Pi Browser에서 이 앱을 열고 다시 시도해 주세요.',piBrowserOnly:'신청이 접수되었습니다. Pi Browser에서 열어 결제를 완료해 주세요.',paymentComplete:'결제가 완료되었습니다. 등록이 활성화됩니다.',paymentCancelled:'결제가 취소되었습니다.',paymentError:'결제 중 오류가 발생했습니다.',genericError:'처리 중 오류가 발생했습니다.'},
+  es:{navNews:'Noticias',navTimeline:'Cronología',navCompanies:'Directorio',piStatus:'Pi no conectado',heroDesc:'Las últimas noticias sobre el cáñamo en el mundo, su historia desde el siglo XVII hasta hoy, y empresas y productos de todo el mundo, todo en un solo lugar.',domainBadge:'Vinculación al dominio hemp.pi en preparación',noticeBanner:'',eyebrowLatest:'Latest',sectionNewsTitle:'Noticias del cáñamo en el mundo',sectionNewsDesc:'Recopilamos automáticamente noticias sobre cáñamo industrial y las actualizamos cada pocos días.',readMore:'Leer artículo →',eyebrowHistory:'History',sectionTimelineTitle:'Cronología del cáñamo (siglo XVII–hoy)',sectionTimelineDesc:'Desde la era de la exploración y la colonización, pasando por la industrialización y la prohibición, hasta el renovado interés actual.',eyebrowDirectory:'Directory',sectionCompaniesTitle:'Empresas y productos',sectionCompaniesDesc:'Descubre empresas y productos de cáñamo de todo el mundo: textiles, alimentos, construcción, cosmética, CBD y bienestar, y biomateriales.',filterAll:'Todos',ctaTitle:'Presenta tu empresa o producto',ctaPrice:'10π / 2 meses',ctaDesc:'para aparecer en el listado',ctaButton:'Solicitar listado',emptyCompanies:'Aún no hay empresas listadas en esta categoría.',siteLink:'Visitar sitio →',modalTitle:'Solicitud de listado de empresa/producto',formName:'Nombre de la empresa/marca *',formCategory:'Categoría *',formCountry:'País / región',formCountryPh:'ej. Japón',formDesc:'Descripción *',formDescPh:'Describe tu negocio o producto',formWebsite:'Sitio web',formLogo:'URL del logotipo (opcional)',formLogoPh:'ej. https://example.com/logo.png',formCancel:'Cancelar',formSubmit:'Solicitar con 10π',statsTitle:'El cáñamo industrial, en cifras',statsDesc:'Un mercado mundial de rápido crecimiento con un gran potencial medioambiental.',ctaHeadline:'Sé una de nuestras primeras empresas listadas',ctaBenefit1:'Visibilidad temprana en un mercado que crece un 17,9% al año',ctaBenefit2:'Llega a usuarios en 5 idiomas: japonés, inglés, chino, coreano y español',ctaBenefit3:'Los listados comienzan en 10π por 2 meses, con pago fácil en Pi',footerTagline:'hemp.pi (próximamente)',footerNote:'Este sitio tiene fines informativos. La normativa sobre el cáñamo varía según el país; verifica las leyes de tu región.',machineTranslated:'Traducción automática',newsEmpty:'No hay noticias para mostrar. Vuelve a consultar tras la próxima actualización automática.',piAuthRequired:'Se requiere autenticación de Pi Browser. Abre esta app en Pi Browser e inténtalo de nuevo.',piBrowserOnly:'Solicitud recibida. Abre esta app en Pi Browser para completar el pago.',paymentComplete:'Pago completado. Tu listado se activará en breve.',paymentCancelled:'El pago fue cancelado.',paymentError:'Ocurrió un error en el pago.',genericError:'Ocurrió un error durante el proceso.'}
+};
+
+const CATEGORIES_ORDER = ['textile','food','construction','cosmetics','cbd_wellness','bioplastic'];
+const CATEGORY_LABELS = {
+  ja:{textile:'繊維・アパレル',food:'食品',construction:'建材',cosmetics:'化粧品・スキンケア',cbd_wellness:'CBD・ウェルネス',bioplastic:'バイオプラスチック・工業素材'},
+  en:{textile:'Textiles & Apparel',food:'Food',construction:'Construction',cosmetics:'Cosmetics & Skincare',cbd_wellness:'CBD & Wellness',bioplastic:'Bioplastics & Materials'},
+  zh:{textile:'纺织与服装',food:'食品',construction:'建材',cosmetics:'化妆品与护肤品',cbd_wellness:'CBD与健康产品',bioplastic:'生物塑料与工业材料'},
+  ko:{textile:'섬유·의류',food:'식품',construction:'건축자재',cosmetics:'화장품·스킨케어',cbd_wellness:'CBD·웰니스',bioplastic:'바이오플라스틱·산업소재'},
+  es:{textile:'Textiles y moda',food:'Alimentos',construction:'Materiales de construcción',cosmetics:'Cosmética y cuidado de la piel',cbd_wellness:'CBD y bienestar',bioplastic:'Bioplásticos y materiales'}
+};
+
+const TIMELINE = {
+  ja:[
+    {year:"1607〜1619年",title:"北米植民地でヘンプ栽培が始まる",text:"ヴァージニアなどの植民地で、全ての農園にヘンプ栽培が義務付けられた。"},
+    {year:"1850年",title:"米国ヘンプ産業のピーク",text:"国勢調査で大規模なヘンプ農園が約8,400件記録された。"},
+    {year:"1937年",title:"米国でMarihuana Tax Act成立",text:"大麻税法により、ヘンプ栽培は事実上規制された。"},
+    {year:"1942年",title:"“Hemp for Victory”キャンペーン",text:"戦時中の資材不足を受け、米農務省が一時的に国内栽培を奨励した。"},
+    {year:"1961年",title:"国連 単一条約",text:"大麻(ヘンプ含む)の国際的な規制が強化された。"},
+    {year:"2018年",title:"米国 Farm Bill改正",text:"THC濃度0.3%以下の産業用ヘンプが連邦法上合法化され、産業が復活した。"},
+    {year:"2020年代",title:"サステナブル素材として再評価",text:"ヘンプクリートやバイオプラスチックなど、環境配慮型素材として世界的に注目されている。"}
+  ],
+  en:[
+    {year:"1607–1619",title:"North American colonies begin growing hemp",text:"Virginia and other colonies required hemp cultivation on every plantation."},
+    {year:"1850",title:"Peak of the U.S. hemp industry",text:"The U.S. census recorded roughly 8,400 large hemp plantations."},
+    {year:"1937",title:"The U.S. Marihuana Tax Act",text:"New red tape effectively restricted hemp cultivation nationwide."},
+    {year:"1942",title:"The “Hemp for Victory” campaign",text:"Wartime shortages led the USDA to briefly encourage domestic hemp growing."},
+    {year:"1961",title:"UN Single Convention",text:"International regulation of cannabis, including hemp, was tightened."},
+    {year:"2018",title:"U.S. Farm Bill",text:"Hemp with under 0.3% THC was legalized federally, reviving the industry."},
+    {year:"2020s",title:"A sustainable material, reconsidered",text:"Hempcrete, bioplastics, and eco-textiles are drawing renewed global attention."}
+  ],
+  zh:[
+    {year:"1607–1619年",title:"北美殖民地开始种植大麻",text:"弗吉尼亚等殖民地规定所有种植园必须种植大麻。"},
+    {year:"1850年",title:"美国大麻产业的顶峰",text:"美国人口普查记录了约8400个大型大麻种植园。"},
+    {year:"1937年",title:"美国《大麻税法》",text:"繁琐的手续实际上限制了全国的大麻种植。"},
+    {year:"1942年",title:"“为胜利种植大麻”运动",text:"战时物资短缺促使美国农业部一度鼓励国内种植。"},
+    {year:"1961年",title:"联合国《单一公约》",text:"加强了对大麻(包括工业大麻)的国际管制。"},
+    {year:"2018年",title:"美国《农业法案》",text:"THC含量低于0.3%的工业大麻在联邦层面合法化,产业得以复苏。"},
+    {year:"2020年代",title:"作为可持续材料重新受到重视",text:"大麻混凝土、生物塑料等环保材料在全球受到关注。"}
+  ],
+  ko:[
+    {year:"1607~1619년",title:"북미 식민지에서 대마 재배 시작",text:"버지니아 등 식민지에서 모든 농장에 대마 재배가 의무화되었다."},
+    {year:"1850년",title:"미국 대마 산업의 정점",text:"인구조사에서 대규모 대마 농장이 약 8,400곳 기록되었다."},
+    {year:"1937년",title:"미국 대마세법 제정",text:"복잡한 절차로 전국의 대마 재배가 사실상 제한되었다."},
+    {year:"1942년",title:"“Hemp for Victory” 캠페인",text:"전시 물자 부족으로 미 농무부가 한때 국내 재배를 장려했다."},
+    {year:"1961년",title:"유엔 단일 협약",text:"대마(산업용 포함)에 대한 국제 규제가 강화되었다."},
+    {year:"2018년",title:"미국 농업법 개정",text:"THC 0.3% 이하 산업용 대마가 연방법상 합법화되며 산업이 부활했다."},
+    {year:"2020년대",title:"지속가능한 소재로 재조명",text:"헴프크리트, 바이오플라스틱 등 친환경 소재로 전 세계에서 주목받고 있다."}
+  ],
+  es:[
+    {year:"1607–1619",title:"Las colonias norteamericanas comienzan a cultivar cáñamo",text:"Virginia y otras colonias exigieron su cultivo en todas las plantaciones."},
+    {year:"1850",title:"Apogeo de la industria del cáñamo en EE. UU.",text:"El censo registró unas 8.400 grandes plantaciones de cáñamo."},
+    {year:"1937",title:"Ley del Impuesto sobre la Marihuana",text:"Los nuevos trámites restringieron de hecho el cultivo en todo el país."},
+    {year:"1942",title:"Campaña “Hemp for Victory”",text:"La escasez de guerra llevó al USDA a fomentar brevemente el cultivo nacional."},
+    {year:"1961",title:"Convención Única de la ONU",text:"Se endureció la regulación internacional del cáñamo."},
+    {year:"2018",title:"Farm Bill de EE. UU.",text:"El cáñamo con menos de 0,3% de THC se legalizó a nivel federal, revitalizando la industria."},
+    {year:"Década de 2020",title:"Revalorización como material sostenible",text:"El hempcrete, los bioplásticos y los textiles ecológicos ganan atención mundial."}
+  ]
+};
+
+/* ===================== stats (sourced, cited below the section) ===================== */
+const STATS = {
+  ja:[
+    {value:'US$7.5B',label:'世界の産業用ヘンプ市場規模(2025年)',caption:'2033年までに約277億ドル規模に成長予測'},
+    {value:'17.9%',label:'年平均成長率(CAGR, 2026–2033)',caption:''},
+    {value:'8–15 t/ha',label:'ヘンプのCO2吸収量(1ヘクタールあたり)',caption:'森林の2〜6t/haと比べ高い固定能力'},
+    {value:'中国・米国・仏国',label:'主要生産国・地域',caption:'インド、タイ、ポーランド、ルーマニアなども拡大中'}
+  ],
+  en:[
+    {value:'US$7.5B',label:'Global industrial hemp market (2025)',caption:'Projected to reach ~US$27.7B by 2033'},
+    {value:'17.9%',label:'Annual growth rate (CAGR, 2026–2033)',caption:''},
+    {value:'8–15 t/ha',label:"Hemp's CO2 absorption per hectare",caption:'vs. 2–6 t/ha for forests'},
+    {value:'China, USA, France',label:'Leading producers',caption:'India, Thailand, Poland, and Romania are also expanding'}
+  ],
+  zh:[
+    {value:'US$7.5B',label:'全球工业大麻市场规模(2025年)',caption:'预计到2033年将增长至约277亿美元'},
+    {value:'17.9%',label:'年均增长率(CAGR,2026–2033)',caption:''},
+    {value:'8–15 t/ha',label:'大麻每公顷CO2吸收量',caption:'相比之下森林为2–6吨/公顷'},
+    {value:'中国、美国、法国',label:'主要生产国/地区',caption:'印度、泰国、波兰、罗马尼亚等也在扩大种植'}
+  ],
+  ko:[
+    {value:'US$7.5B',label:'세계 산업용 대마 시장 규모(2025년)',caption:'2033년까지 약 277억 달러 규모로 성장 전망'},
+    {value:'17.9%',label:'연평균 성장률(CAGR, 2026–2033)',caption:''},
+    {value:'8–15 t/ha',label:'헴프의 헥타르당 CO2 흡수량',caption:'숲은 헥타르당 2–6톤'},
+    {value:'중국·미국·프랑스',label:'주요 생산국·지역',caption:'인도, 태국, 폴란드, 루마니아 등도 확대 중'}
+  ],
+  es:[
+    {value:'US$7.5B',label:'Mercado mundial del cáñamo industrial (2025)',caption:'Se prevé que alcance ~27.700 millones de USD en 2033'},
+    {value:'17.9%',label:'Tasa de crecimiento anual (CAGR, 2026–2033)',caption:''},
+    {value:'8–15 t/ha',label:'Absorción de CO2 del cáñamo por hectárea',caption:'frente a 2–6 t/ha de los bosques'},
+    {value:'China, EE. UU., Francia',label:'Principales productores',caption:'India, Tailandia, Polonia y Rumanía también en expansión'}
+  ]
+};
+
+/* ===================== footer info modal content ===================== */
+const INFO_TITLES = {
+  ja:{about:'このサイトについて',contact:'お問い合わせ',privacy:'プライバシーポリシー',terms:'利用規約'},
+  en:{about:'About',contact:'Contact',privacy:'Privacy Policy',terms:'Terms of Service'},
+  zh:{about:'关于我们',contact:'联系我们',privacy:'隐私政策',terms:'使用条款'},
+  ko:{about:'소개',contact:'문의하기',privacy:'개인정보처리방침',terms:'이용약관'},
+  es:{about:'Acerca de',contact:'Contacto',privacy:'Política de privacidad',terms:'Términos de servicio'}
+};
+const INFO_BODY = {
+  ja:{
+    about:'World Hemp Historyは、世界の産業用ヘンプに関するニュース・歴史・関連企業を一つにまとめた情報ポータルです。麻という植物が繊維・建材・食品・バイオ素材など幅広い産業で活用されてきた歴史とその可能性を、出典に基づいた正確な情報で紹介することを目指しています。企業ディレクトリは、掲載企業からの掲載料によって運営されています。',
+    contact:'ご質問や企業掲載に関するお問い合わせは contact@hemp.pi までご連絡ください。',
+    privacy:'お問い合わせフォームおよび企業掲載申込フォームでご入力いただいた情報(お名前、企業情報、メールアドレスなど)は、お問い合わせへの対応または掲載手続きの目的にのみ利用します。サイト運営に必要な範囲を超えて第三者へ提供・売却することはありません。本ポリシーはサービスの拡大に伴い更新される場合があります。',
+    terms:'企業・プロダクトの掲載を申し込む際は、入力内容が正確であること、および掲載企業を代表する権限を有することを確認したものとみなされます。掲載料(2ヶ月10π)は、掲載開始後は返金されません。関連法令に違反する内容や事実と異なる内容を含む掲載は削除する場合があります。本サイトの情報は一般的な情報提供を目的としており、法律・医療・投資に関する助言ではありません。'
+  },
+  en:{
+    about:'World Hemp History is an information portal bringing together news, history, and companies related to industrial hemp from around the world. Our goal is to present hemp’s long history and its uses in textiles, construction, food, and bio-materials based on accurate, sourced information. The directory is supported by paid listings from featured companies.',
+    contact:'Questions about this site or company listings? Reach us at contact@hemp.pi.',
+    privacy:'We collect only the information you submit through this site’s contact and listing forms — such as your name, company details, and email address — solely to respond to your inquiry or process a listing. We do not sell your information or share it with third parties beyond what’s needed to operate the site. This policy may be updated as the service grows.',
+    terms:'By submitting a company or product listing, you confirm the information provided is accurate and that you have the right to represent the listed company. Listing fees (10π per 2-month period) are non-refundable once a listing goes live. We reserve the right to remove listings that violate applicable laws or misrepresent products. This site provides general information only and is not legal, medical, or investment advice.'
+  },
+  zh:{
+    about:'World Hemp History 是一个汇集全球工业大麻相关新闻、历史与企业信息的门户网站。我们致力于基于可靠来源,介绍大麻在纺织、建材、食品和生物材料等领域的悠久历史与广阔前景。企业目录由刊登企业支付的费用支持运营。',
+    contact:'如有任何问题或企业刊登相关咨询,请联系 contact@hemp.pi。',
+    privacy:'您通过本网站的咨询表单和企业刊登申请表单提交的信息(如姓名、企业信息、电子邮件地址等),仅用于回复咨询或处理刊登事宜。除运营网站所需外,我们不会将您的信息出售或提供给第三方。本政策可能随服务发展而更新。',
+    terms:'提交企业或产品刊登申请即表示您确认所提供信息真实准确,并有权代表所刊登的企业。刊登费用(2个月10π)在刊登生效后不予退还。对于违反相关法律法规或内容失实的刊登,我们保留删除的权利。本网站信息仅供一般参考,不构成法律、医疗或投资建议。'
+  },
+  ko:{
+    about:'World Hemp History는 전 세계 산업용 대마 관련 뉴스, 역사, 기업 정보를 한곳에 모은 정보 포털입니다. 섬유, 건축자재, 식품, 바이오 소재 등 다양한 산업에서 활용되어 온 대마의 역사와 가능성을 출처에 기반한 정확한 정보로 소개하는 것을 목표로 합니다. 기업 디렉터리는 등록 기업의 게재료로 운영됩니다.',
+    contact:'문의사항이나 기업 등록 관련 사항은 contact@hemp.pi 로 연락해 주세요.',
+    privacy:'문의 양식 및 기업 등록 신청 양식을 통해 입력하신 정보(이름, 기업 정보, 이메일 주소 등)는 문의 응대 또는 등록 절차 목적으로만 사용됩니다. 사이트 운영에 필요한 범위를 넘어 제3자에게 제공하거나 판매하지 않습니다. 본 정책은 서비스 확장에 따라 업데이트될 수 있습니다.',
+    terms:'기업·제품 등록을 신청함으로써 입력하신 정보가 정확하며 해당 기업을 대표할 권한이 있음을 확인하는 것으로 간주됩니다. 게재료(2개월 10π)는 게재 개시 후 환불되지 않습니다. 관련 법규를 위반하거나 사실과 다른 내용의 게재물은 삭제될 수 있습니다. 본 사이트의 정보는 일반적인 정보 제공을 목적으로 하며 법률·의료·투자 자문이 아닙니다.'
+  },
+  es:{
+    about:'World Hemp History es un portal informativo que reúne noticias, historia y empresas relacionadas con el cáñamo industrial de todo el mundo. Nuestro objetivo es presentar la larga historia del cáñamo y sus usos en textiles, construcción, alimentación y biomateriales, basándonos en información precisa y verificable. El directorio se sostiene gracias a las empresas que pagan por aparecer en él.',
+    contact:'¿Preguntas sobre este sitio o el listado de tu empresa? Escríbenos a contact@hemp.pi.',
+    privacy:'La información que envíes a través de los formularios de contacto y de solicitud de listado de este sitio (como tu nombre, datos de la empresa y correo electrónico) se utiliza únicamente para responder a tu consulta o procesar el listado. No vendemos ni compartimos tu información con terceros más allá de lo necesario para operar el sitio. Esta política puede actualizarse a medida que el servicio crece.',
+    terms:'Al enviar una solicitud de listado de empresa o producto, confirmas que la información proporcionada es precisa y que tienes autoridad para representar a la empresa listada. Las tarifas de listado (10π por 2 meses) no son reembolsables una vez activo el listado. Nos reservamos el derecho de eliminar listados que infrinjan leyes aplicables o contengan información falsa. Este sitio ofrece información general y no constituye asesoría legal, médica ni de inversión.'
+  }
+};
+
+const LEAF_SVG = '<svg class="leaf-watermark" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>';
+const TAG_LEAF_SVG = '<svg class="tag-leaf" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>';
+
+let currentLang = 'ja';
+let currentCat = '';
+let latestNews = { lastUpdated: null, articles: [] };
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+// href/src に埋め込む前に、http(s)以外のスキーム(javascript: 等)を弾く。
+// サーバー側でも同様のバリデーションを行っているが、念のためフロント側でも防御する。
+function isSafeHttpUrl(url){
+  if(!url) return false;
+  try{
+    const u = new URL(url, window.location.href);
+    return u.protocol === 'http:' || u.protocol === 'https:';
+  }catch(e){ return false; }
+}
+
+/* ---------------- Pi SDK ---------------- */
+let piUser = null;
+let piAccessToken = null; // サーバー側で /v2/me により検証するためのアクセストークン(申込者の本人確認用)
+async function initPi(){
+  try{
+    if(typeof Pi === 'undefined'){ return; }
+    // sandboxフラグはサーバーの /api/config から取得する(.envのPI_SANDBOXを変更する
+    // だけで本番切替できるようにするため、ここではハードコードしない)。
+    // 万一/api/configが取得できない場合は、安全側としてsandbox: trueで初期化する。
+    let sandbox = true;
+    try{
+      const cfg = await fetch('/api/config').then(r => r.json());
+      if(typeof cfg.sandbox === 'boolean') sandbox = cfg.sandbox;
+    }catch(e){
+      console.warn('Failed to load /api/config, defaulting to sandbox mode:', e.message);
+    }
+    await Pi.init({ version: "2.0", sandbox });
+    document.getElementById('piStatus').textContent = sandbox ? 'Pi Browser (sandbox)' : 'Pi Browser';
+  }catch(e){ console.warn('Pi SDK init skipped:', e.message); }
+}
+async function piAuthenticate(){
+  if(typeof Pi === 'undefined'){ return null; }
+  try{
+    const authResult = await Pi.authenticate(['username','payments'], onIncompletePaymentFound);
+    piUser = authResult.user;
+    piAccessToken = authResult.accessToken;
+    document.getElementById('piStatus').textContent = `@${piUser.username}`;
+    return authResult;
+  }catch(e){ console.error('Pi authenticate failed', e); return null; }
+}
+function onIncompletePaymentFound(payment){ console.log('未完了の支払いを検出:', payment); }
+initPi();
+
+/* ---------------- News ---------------- */
+async function loadNews(){
+  try{
+    const res = await fetch('/api/news');
+    latestNews = await res.json();
+  }catch(e){
+    latestNews = { lastUpdated: null, articles: [] };
+  }
+  renderNews();
+}
+function renderNews(){
+  const t = UI[currentLang];
+  const grid = document.getElementById('newsGrid');
+  const meta = document.getElementById('newsMeta');
+  if(latestNews.lastUpdated){
+    meta.textContent = `${new Date(latestNews.lastUpdated).toLocaleString()}`;
+  } else {
+    meta.textContent = '';
+  }
+  if(!latestNews.articles || latestNews.articles.length === 0){
+    grid.innerHTML = `<div class="news-empty">${t.newsEmpty}</div>`;
+    return;
+  }
+  grid.innerHTML = latestNews.articles.map(a => {
+    const i18nData = a.i18n || {};
+    const tr = i18nData[currentLang] || i18nData.en || { title: a.title, description: a.description };
+    const translated = currentLang !== 'en' && i18nData[currentLang];
+    return `
+    <div class="news-card">
+      ${LEAF_SVG}
+      <div class="body">
+        <h3>${escapeHtml(tr.title || '')}</h3>
+        <p>${escapeHtml(tr.description || '')}</p>
+        ${translated ? `<span class="mt-badge">${t.machineTranslated}</span>` : ''}
+        <div class="src"><span>${escapeHtml(a.source || '')}</span>${isSafeHttpUrl(a.url) ? `<a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">${t.readMore}</a>` : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------------- Timeline ---------------- */
+function renderTimeline(){
+  document.getElementById('timelineList').innerHTML = TIMELINE[currentLang].map(item => `
+    <div class="tl-item">
+      <svg class="tl-leaf" viewBox="-85 -95 170 100"><use href="#hemp-leaf-shape"/></svg>
+      <div class="tl-year">${item.year}</div>
+      <h3>${item.title}</h3>
+      <p>${item.text}</p>
+    </div>
+  `).join('');
+}
+
+/* ---------------- Companies ---------------- */
+async function loadCompanies(){
+  const url = currentCat ? `/api/companies?category=${encodeURIComponent(currentCat)}` : '/api/companies';
+  const res = await fetch(url);
+  const companies = await res.json();
+  renderCompanies(companies);
+}
+function renderCompanies(companies){
+  const t = UI[currentLang];
+  const catMap = CATEGORY_LABELS[currentLang];
+  const grid = document.getElementById('companyGrid');
+  const empty = document.getElementById('companyEmpty');
+  if(!companies || companies.length === 0){
+    grid.innerHTML = '';
+    empty.textContent = t.emptyCompanies;
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = companies.map(c => `
+    <div class="company-card">
+      ${isSafeHttpUrl(c.logoUrl) ? `<img class="company-logo" src="${escapeHtml(c.logoUrl)}" alt="${escapeHtml(c.name)}" referrerpolicy="no-referrer" onerror="this.remove()" />` : ''}
+      <span class="cat-tag">${TAG_LEAF_SVG}${catMap[c.category] || c.category}</span>
+      <h3>${escapeHtml(c.name)}</h3>
+      <div class="country">${escapeHtml(c.country || '')}</div>
+      <p>${escapeHtml(c.description)}</p>
+      ${isSafeHttpUrl(c.website) ? `<a class="site-link" href="${escapeHtml(c.website)}" target="_blank" rel="noopener noreferrer">${t.siteLink}</a>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderCategoryFilters(){
+  const t = UI[currentLang];
+  const catMap = CATEGORY_LABELS[currentLang];
+  const filters = document.getElementById('catFilters');
+  filters.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.textContent = t.filterAll;
+  if(currentCat === '') allBtn.classList.add('active');
+  allBtn.addEventListener('click', () => { currentCat=''; renderCategoryFilters(); loadCompanies(); });
+  filters.appendChild(allBtn);
+  CATEGORIES_ORDER.forEach(id => {
+    const btn = document.createElement('button');
+    btn.textContent = catMap[id];
+    if(currentCat === id) btn.classList.add('active');
+    btn.addEventListener('click', () => { currentCat=id; renderCategoryFilters(); loadCompanies(); });
+    filters.appendChild(btn);
+  });
+  document.getElementById('categorySelect').innerHTML = CATEGORIES_ORDER.map(id => `<option value="${id}">${catMap[id]}</option>`).join('');
+}
+
+/* ---------------- Stats band ---------------- */
+function renderStats(){
+  const stats = STATS[currentLang];
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = stats.map(s => `
+    <div class="stat-tile">
+      <div class="value">${s.value}</div>
+      <div class="label">${s.label}</div>
+      ${s.caption ? `<div class="caption">${s.caption}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+/* ---------------- CTA benefits + footer info links ---------------- */
+function renderCtaBenefits(){
+  const t = UI[currentLang];
+  const list = document.getElementById('ctaBenefits');
+  const items = [t.ctaBenefit1, t.ctaBenefit2, t.ctaBenefit3];
+  list.innerHTML = items.map(text => `<li>${TAG_LEAF_SVG}<span>${text}</span></li>`).join('');
+}
+
+function renderFooterLinks(){
+  const titles = INFO_TITLES[currentLang];
+  document.querySelectorAll('.info-link').forEach(btn => {
+    btn.textContent = titles[btn.dataset.topic];
+  });
+}
+
+/* ---------------- Language switching ---------------- */
+function applyLanguage(lang){
+  currentLang = lang;
+  const t = UI[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if(t[key] != null) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if(t[key] != null) el.placeholder = t[key];
+  });
+  renderNews();
+  renderTimeline();
+  renderCategoryFilters();
+  loadCompanies();
+  renderStats();
+  renderCtaBenefits();
+  renderFooterLinks();
+}
+
+document.getElementById('langSelect').value = currentLang;
+document.getElementById('langSelect').addEventListener('change', (e) => applyLanguage(e.target.value));
+applyLanguage(currentLang);
+loadNews();
+
+/* ---------------- Footer info modal (about/contact/privacy/terms) ---------------- */
+const infoModalOverlay = document.getElementById('infoModalOverlay');
+document.querySelectorAll('.info-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const topic = btn.dataset.topic;
+    document.getElementById('infoModalTitle').textContent = INFO_TITLES[currentLang][topic];
+    document.getElementById('infoModalBody').textContent = INFO_BODY[currentLang][topic];
+    infoModalOverlay.classList.add('open');
+  });
+});
+document.getElementById('closeInfoModal').addEventListener('click', () => infoModalOverlay.classList.remove('open'));
+infoModalOverlay.addEventListener('click', (e) => { if(e.target === infoModalOverlay) infoModalOverlay.classList.remove('open'); });
+
+/* ---------------- Listing modal + Pi payment ---------------- */
+const overlay = document.getElementById('modalOverlay');
+document.getElementById('openListingForm').addEventListener('click', () => overlay.classList.add('open'));
+document.getElementById('closeModal').addEventListener('click', () => overlay.classList.remove('open'));
+
+document.getElementById('listingForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const t = UI[currentLang];
+  const msg = document.getElementById('formMsg');
+  msg.textContent = '';
+  const form = new FormData(e.target);
+  const payload = Object.fromEntries(form.entries());
+
+  if(typeof Pi === 'undefined'){
+    msg.style.color = 'var(--primary-dark)';
+    msg.textContent = t.piBrowserOnly;
+    return;
+  }
+
+  // 「申し込んだ人」と「支払った人」が同一Piユーザーであることをサーバー側で
+  // 検証できるようにするため、掲載データを作成する前にPi認証を済ませ、
+  // アクセストークンを一緒に送る(サーバーは /v2/me でこのトークンを検証する)。
+  if(!piUser){ await piAuthenticate(); }
+  if(!piUser || !piAccessToken){
+    msg.style.color = 'crimson';
+    msg.textContent = t.piAuthRequired;
+    return;
+  }
+  payload.piAccessToken = piAccessToken;
+
+  try{
+    const createRes = await fetch('/api/companies', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const created = await createRes.json();
+    if(!createRes.ok){
+      msg.style.color = 'crimson';
+      msg.textContent = created.error || t.genericError;
+      return;
+    }
+
+    await Pi.createPayment({
+      amount: created.priceP,
+      memo: `World Hemp History listing (${payload.name})`,
+      metadata: { listingId: created.listingId }
+    }, {
+      onReadyForServerApproval: async (paymentId) => {
+        await fetch('/api/payments/approve', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId, listingId: created.listingId })
+        });
+      },
+      onReadyForServerCompletion: async (paymentId, txid) => {
+        await fetch('/api/payments/complete', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId, txid, listingId: created.listingId })
+        });
+        msg.style.color = 'var(--primary-dark)';
+        msg.textContent = t.paymentComplete;
+        setTimeout(() => { overlay.classList.remove('open'); loadCompanies(); }, 1500);
+      },
+      onCancel: () => { msg.textContent = t.paymentCancelled; },
+      onError: (error) => { msg.style.color = 'crimson'; msg.textContent = t.paymentError; console.error(error); }
+    });
+  }catch(err){
+    console.error(err);
+    msg.style.color = 'crimson';
+    msg.textContent = t.genericError;
+  }
+});
+</script>
+</body>
+</html>
