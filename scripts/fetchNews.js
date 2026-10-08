@@ -83,7 +83,11 @@ async function fetchAndStoreNews() {
   const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=${encodeURIComponent(QUERY)}&language=en`;
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error(`NewsData.io API error: ${res.status} ${res.statusText}`);
+    // NewsData.ioは失敗時に原因(例: クエリが長すぎる、パラメータ不正)をJSONで返すので、
+    // 切り分けできるよう本文も一緒にエラーに含める(APIキーはURLにのみ含まれ本文には出ない)。
+    let detail = '';
+    try { detail = (await res.text()).slice(0, 300); } catch (_) { /* ignore */ }
+    throw new Error(`NewsData.io API error: ${res.status} ${res.statusText} ${detail}`);
   }
   const data = await res.json();
   if (data.status !== 'success') {
