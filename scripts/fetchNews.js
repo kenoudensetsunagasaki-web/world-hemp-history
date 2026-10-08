@@ -3,8 +3,10 @@ const fetch = require('node-fetch');
 const db = require('../db');
 
 // 産業用ヘンプに関連するキーワード。嗜好用大麻のニュースをできるだけ除外するため、
-// 産業用途(繊維・建材・食品・バイオ素材など)に寄せたクエリにしている
-const QUERY = '"industrial hemp" OR hempcrete OR "hemp fiber" OR "hemp textile" OR "hemp seed" OR "hemp plastic" OR "hemp construction"';
+// 産業用途(繊維・建材・バイオ素材など)に寄せたクエリにしている。
+// 注意: NewsData.ioの無料プランは検索クエリ(q)が最大100文字まで。超えると
+// 422 UNPROCESSABLE ENTITY エラーになるので、100文字以内に収めること。
+const QUERY = '"industrial hemp" OR hempcrete OR "hemp fiber" OR "hemp textile" OR "hemp plastic"';
 
 // UIが対応する言語(英語は原文なので翻訳対象から除く)
 const TARGET_LANGS = ['ja', 'zh', 'ko', 'es'];
