@@ -62,6 +62,29 @@ async function translateArticle(article) {
 // 可能性があるため、TRANSLATE_EMAILの設定を強く推奨する(下の警告ログ参照)。
 const ARTICLES_PER_FETCH = 8;
 
+// 嗜好用大麻・THC関連の記事を除外するための語句(タイトル・概要に含まれていたら除外)。
+// 検索クエリは無料プランの100文字制限があり除外条件を入れる余地が無いため、取得後に絞り込む。
+const EXCLUDE_PATTERN = /\b(thc|marijuana|cannabis|dispensar\w*|delta-?\d|recreational|weed|psychoactive)\b/i;
+
+// 同じ記事が複数のテレビ局サイト等で配信されていることがあるため、タイトルで重複を除く。
+function normalizeTitle(t) {
+  return String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function selectArticles(results) {
+  const seen = new Set();
+  const out = [];
+  for (const a of results) {
+    if (!a || !a.title || !a.link) continue;
+    if (EXCLUDE_PATTERN.test(`${a.title} ${a.description || ''}`)) continue;
+    const key = normalizeTitle(a.title);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(a);
+  }
+  return out;
+}
+
 async function fetchAndStoreNews() {
   const apiKey = process.env.NEWSDATA_API_KEY;
   if (!apiKey) {
@@ -94,7 +117,7 @@ async function fetchAndStoreNews() {
     throw new Error(`NewsData.io returned error: ${JSON.stringify(data)}`);
   }
 
-  const rawArticles = (data.results || []).slice(0, ARTICLES_PER_FETCH).map((a) => ({
+  const rawArticles = selectArticles(data.results || []).slice(0, ARTICLES_PER_FETCH).map((a) => ({
     title: a.title,
     description: a.description,
     url: a.link,
@@ -102,6 +125,11 @@ async function fetchAndStoreNews() {
     publishedAt: a.pubDate,
     imageUrl: a.image_url || null,
   }));
+
+  if (rawArticles.length === 0) {
+    // 絞り込みの結果0件になった場合に、既存の記事を空で上書きしてしまわないようにする
+    throw new Error('条件に合う記事がありませんでした(既存のニュースはそのまま残しています)');
+  }
 
   // 記事ごとに ja/zh/ko/es へ自動翻訳し、結果をキャッシュに保存しておく。
   // (取得のたびに翻訳し直さないよう、翻訳結果も news.json に永続化する)
