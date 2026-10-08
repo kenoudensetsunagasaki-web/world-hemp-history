@@ -6,7 +6,16 @@ const db = require('../db');
 // 産業用途(繊維・建材・バイオ素材など)に寄せたクエリにしている。
 // 注意: NewsData.ioの無料プランは検索クエリ(q)が最大100文字まで。超えると
 // 422 UNPROCESSABLE ENTITY エラーになるので、100文字以内に収めること。
-const QUERY = '"industrial hemp" OR hempcrete OR "hemp fiber" OR "hemp textile" OR "hemp plastic"';
+// 件数を確保するため、切り口の違うクエリを複数回に分けて検索する(各100文字以内)。
+// どれか1つが失敗(422など)しても、他のクエリの結果で処理を続ける。
+const QUERIES = [
+  '"industrial hemp" OR hempcrete OR "hemp fiber" OR "hemp textile" OR "hemp plastic"',
+  'hemp AND (farming OR farmers OR building OR construction OR processing OR fuel)',
+];
+// 1クエリあたり最大何ページ取得するか(1ページ約10件、1ページ=1クレジット。無料枠は1日200)
+const MAX_PAGES_PER_QUERY = 2;
+// 保存しておく記事の最大件数(これを超えたら古いものから消える)
+const MAX_STORED_ARTICLES = 30;
 
 // UIが対応する言語(英語は原文なので翻訳対象から除く)
 const TARGET_LANGS = ['ja', 'zh', 'ko', 'es'];
@@ -64,7 +73,10 @@ const ARTICLES_PER_FETCH = 8;
 
 // 嗜好用大麻・THC関連の記事を除外するための語句(タイトル・概要に含まれていたら除外)。
 // 検索クエリは無料プランの100文字制限があり除外条件を入れる余地が無いため、取得後に絞り込む。
-const EXCLUDE_PATTERN = /\b(thc|marijuana|cannabis|dispensar\w*|delta-?\d|recreational|weed|psychoactive)\b/i;
+const EXCLUDE_PATTERN = /\b(thc|marijuana|cannabis|dispensar\w*|delta-?\d|recreational|weed|psychoactive|cbd|joint|joints|rolling|smok\w*|vap\w*|pre-?rolls?|bongs?|edibles?|cagr)\b/i;
+// 産業用ヘンプと無関係な記事(検索語が本文の一部にしか出てこないもの)を避けるため、
+// タイトルか概要に "hemp" が含まれる記事だけを採用する。
+const REQUIRE_PATTERN = /hemp/i;
 
 // 同じ記事が複数のテレビ局サイト等で配信されていることがあるため、タイトルで重複を除く。
 function normalizeTitle(t) {
@@ -76,7 +88,9 @@ function selectArticles(results) {
   const out = [];
   for (const a of results) {
     if (!a || !a.title || !a.link) continue;
-    if (EXCLUDE_PATTERN.test(`${a.title} ${a.description || ''}`)) continue;
+    const text = `${a.title} ${a.description || ''}`;
+    if (!REQUIRE_PATTERN.test(text)) continue;
+    if (EXCLUDE_PATTERN.test(text)) continue;
     const key = normalizeTitle(a.title);
     if (seen.has(key)) continue;
     seen.add(key);
@@ -103,41 +117,80 @@ async function fetchAndStoreNews() {
     );
   }
 
-  const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=${encodeURIComponent(QUERY)}&language=en`;
-  const res = await fetch(url);
-  if (!res.ok) {
-    // NewsData.ioは失敗時に原因(例: クエリが長すぎる、パラメータ不正)をJSONで返すので、
-    // 切り分けできるよう本文も一緒にエラーに含める(APIキーはURLにのみ含まれ本文には出ない)。
-    let detail = '';
-    try { detail = (await res.text()).slice(0, 300); } catch (_) { /* ignore */ }
-    throw new Error(`NewsData.io API error: ${res.status} ${res.statusText} ${detail}`);
+  // 複数のクエリ・ページから記事を集める
+  const collected = [];
+  const errors = [];
+  for (const q of QUERIES) {
+    let page = null;
+    for (let i = 0; i < MAX_PAGES_PER_QUERY; i++) {
+      let url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=${encodeURIComponent(q)}&language=en`;
+      if (page) url += `&page=${encodeURIComponent(page)}`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) {
+          // NewsData.ioは失敗時に原因をJSONで返すので、切り分けできるよう本文も含める
+          let detail = '';
+          try { detail = (await res.text()).slice(0, 300); } catch (_) { /* ignore */ }
+          throw new Error(`NewsData.io API error: ${res.status} ${res.statusText} ${detail}`);
+        }
+        const data = await res.json();
+        if (data.status !== 'success') {
+          throw new Error(`NewsData.io returned error: ${JSON.stringify(data)}`);
+        }
+        collected.push(...(data.results || []));
+        page = data.nextPage || null;
+      } catch (e) {
+        console.warn(`[news] query failed (${q}):`, e.message);
+        errors.push(e.message);
+        break;
+      }
+      if (!page) break;
+    }
   }
-  const data = await res.json();
-  if (data.status !== 'success') {
-    throw new Error(`NewsData.io returned error: ${JSON.stringify(data)}`);
+  if (collected.length === 0 && errors.length > 0) {
+    throw new Error(errors[0]);
   }
 
-  const rawArticles = selectArticles(data.results || []).slice(0, ARTICLES_PER_FETCH).map((a) => ({
-    title: a.title,
-    description: a.description,
-    url: a.link,
-    source: a.source_id,
-    publishedAt: a.pubDate,
-    imageUrl: a.image_url || null,
-  }));
+  // 既に保存済みの記事と重複しない「新しい記事」だけを抽出する
+  const existing = await db.getNews();
+  const existingArticles = Array.isArray(existing.articles) ? existing.articles : [];
+  const knownUrls = new Set(existingArticles.map((a) => a.url));
+  const knownTitles = new Set(existingArticles.map((a) => normalizeTitle(a.title)));
 
-  if (rawArticles.length === 0) {
-    // 絞り込みの結果0件になった場合に、既存の記事を空で上書きしてしまわないようにする
+  const newRaw = selectArticles(collected)
+    .filter((a) => !knownUrls.has(a.link) && !knownTitles.has(normalizeTitle(a.title)))
+    .sort((a, b) => new Date(b.pubDate || 0) - new Date(a.pubDate || 0))
+    .slice(0, ARTICLES_PER_FETCH)
+    .map((a) => ({
+      title: a.title,
+      description: a.description,
+      url: a.link,
+      source: a.source_id,
+      publishedAt: a.pubDate,
+      imageUrl: a.image_url || null,
+    }));
+
+  if (newRaw.length === 0 && existingArticles.length === 0) {
+    // 保存済みも新規も無い場合は何も上書きしない
     throw new Error('条件に合う記事がありませんでした(既存のニュースはそのまま残しています)');
   }
 
-  // 記事ごとに ja/zh/ko/es へ自動翻訳し、結果をキャッシュに保存しておく。
-  // (取得のたびに翻訳し直さないよう、翻訳結果も news.json に永続化する)
-  const articles = [];
-  for (const article of rawArticles) {
+  // 新しい記事だけを ja/zh/ko/es へ自動翻訳する(既存記事は翻訳済みなので再翻訳しない)
+  const newArticles = [];
+  for (const article of newRaw) {
     const i18n = await translateArticle(article);
-    articles.push({ ...article, i18n });
+    newArticles.push({ ...article, i18n });
   }
+
+  // 既存の記事も、今回の検索条件(除外ワード等)に合わなくなったものは取り除く
+  const keptExisting = existingArticles.filter(
+    (a) => REQUIRE_PATTERN.test(`${a.title} ${a.description || ''}`) &&
+           !EXCLUDE_PATTERN.test(`${a.title} ${a.description || ''}`)
+  );
+
+  const articles = [...newArticles, ...keptExisting]
+    .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
+    .slice(0, MAX_STORED_ARTICLES);
 
   const intervalDays = parseInt(process.env.NEWS_FETCH_INTERVAL_DAYS || '3', 10);
   const now = new Date();
