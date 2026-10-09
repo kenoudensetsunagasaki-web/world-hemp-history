@@ -16,7 +16,7 @@ const APPSTUDIO_LOGIN_URL = 'https://backend.appstudio-u7cm9zhmha0ruwv8.piappeng
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const MAX_SESSIONS = 5000;
 
-function createPiAuth({ fetchImpl = fetch, now = () => Date.now() } = {}) {
+function createPiAuth({ fetchImpl = fetch, now = () => Date.now(), origin = process.env.APP_ORIGIN || 'https://world-hemp-history.onrender.com' } = {}) {
   const sessions = new Map(); // token -> { uid, username, expiresAt }
 
   function sweep() {
@@ -38,14 +38,19 @@ function createPiAuth({ fetchImpl = fetch, now = () => Date.now() } = {}) {
     }
     const res = await fetchImpl(APPSTUDIO_LOGIN_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        // App Studio がアプリを特定できるよう、このアプリ自身のURLをOriginとして付ける
+        ...(origin ? { Origin: origin, Referer: origin + '/' } : {}),
+      },
       body: JSON.stringify({ accessToken }),
     });
     const text = await res.text();
     let data;
     try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
     if (!res.ok || !data.user || typeof data.user.uid !== 'string' || !data.user.uid) {
-      const err = new Error(`Pi認証に失敗しました(App Studio: ${res.status})`);
+      const snippet = (text || '').replace(/\s+/g, ' ').slice(0, 160); // 原因切り分け用(App Studioのエラー本文。トークンは含まれない)
+      const err = new Error(`Pi認証に失敗しました(App Studio: ${res.status}) ${snippet}`.trim());
       err.status = 401;
       throw err;
     }
