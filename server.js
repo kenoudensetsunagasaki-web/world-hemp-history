@@ -24,17 +24,19 @@ app.use(express.json());
 // ==================================================================
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
+  // X-Frame-Options は付けない: Pi Browser / Sandbox はアプリを iframe 内で表示するため、
+  // DENY だと ERR_BLOCKED_BY_RESPONSE で開けなくなる。許可する親は CSP の frame-ancestors で絞る。
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader(
     'Content-Security-Policy',
     "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' https://sdk.minepi.com; " +
+      "script-src 'self' 'unsafe-inline' https://sdk.minepi.com https://*.minepi.com; " +
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
       "font-src 'self' https://fonts.gstatic.com; " +
       "img-src 'self' data: https:; " +
-      "connect-src 'self' https://api.minepi.com; " +
-      "frame-ancestors 'none'"
+      "connect-src 'self' https://api.minepi.com https://*.minepi.com; " +
+      "frame-src https://*.minepi.com https://*.pinet.com; " +
+      "frame-ancestors 'self' https://*.minepi.com https://*.pinet.com"
   );
   next();
 });
