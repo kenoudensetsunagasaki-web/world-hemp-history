@@ -38,7 +38,7 @@ app.use((req, res, next) => {
       "img-src 'self' data: https:; " +
       "connect-src 'self' https://socialchain.app https://api.minepi.com https://*.minepi.com; " +
       "frame-src https://*.minepi.com https://*.pinet.com; " +
-      "frame-ancestors 'self' https://*.minepi.com https://*.pinet.com"
+      "frame-ancestors 'self' https://*.minepi.com https://*.pinet.com https://*.piappengine.com https://socialchain.app"
   );
   next();
 });
