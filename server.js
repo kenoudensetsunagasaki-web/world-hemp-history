@@ -6,6 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const fetch = require('node-fetch');
 const db = require('./db');
 const { fetchAndStoreNews } = require('./scripts/fetchNews');
+const { createPiAuth } = require('./piAuth');
+const piAuth = createPiAuth();
 
 const app = express();
 // Renderのようなリバースプロキシの背後で動く場合、req.ip が正しいクライアントIPを
@@ -34,7 +36,7 @@ app.use((req, res, next) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
       "font-src 'self' https://fonts.gstatic.com; " +
       "img-src 'self' data: https:; " +
-      "connect-src 'self' https://api.minepi.com https://*.minepi.com; " +
+      "connect-src 'self' https://socialchain.app https://api.minepi.com https://*.minepi.com; " +
       "frame-src https://*.minepi.com https://*.pinet.com; " +
       "frame-ancestors 'self' https://*.minepi.com https://*.pinet.com"
   );
@@ -152,6 +154,19 @@ function tooLong(value, key) {
   return typeof value === 'string' && value.length > MAX_LEN[key];
 }
 
+// Pi.authenticate() で得た accessToken を App Studio で検証し、このサーバーのセッションを発行する。
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, message: '認証リクエストが多すぎます。しばらくしてから再度お試しください。' });
+app.post('/api/auth/pi', authLimiter, async (req, res) => {
+  try {
+    const { accessToken } = req.body || {};
+    const result = await piAuth.loginWithAccessToken(accessToken);
+    res.json(result);
+  } catch (e) {
+    console.warn('[auth/pi] failed:', e.message);
+    res.status(e.status || 502).json({ error: e.message });
+  }
+});
+
 app.get('/api/companies', async (req, res) => {
   try {
     const { category } = req.query;
@@ -163,7 +178,7 @@ app.get('/api/companies', async (req, res) => {
 });
 
 app.post('/api/companies', listingCreateLimiter, async (req, res) => {
-  const { name, category, country, description, website, logoUrl, contactEmail, piAccessToken } = req.body || {};
+  const { name, category, country, description, website, logoUrl, contactEmail } = req.body || {};
   if (!name || !category || !description) {
     return res.status(400).json({ error: 'name, category, description は必須です' });
   }
@@ -185,23 +200,14 @@ app.post('/api/companies', listingCreateLimiter, async (req, res) => {
 
   // 申込者のPiユーザーを記録しておく(後の支払い検証で「申し込んだ人」と
   // 「支払った人」が同一Piユーザーであることを確認するために使う)。
-  // クライアントが自己申告する username 等はそのままでは信用せず、必ず
-  // Piのアクセストークンを /v2/me に投げて検証済みの uid/username のみを保存する。
-  let creatorUid = null;
-  let creatorUsername = null;
-  if (piAccessToken) {
-    try {
-      const me = await piMeRequest(piAccessToken);
-      creatorUid = me.uid || null;
-      creatorUsername = me.username || null;
-    } catch (e) {
-      // Pi認証トークンの検証に失敗しても、掲載自体は作成する(必須化すると
-      // Pi Browser以外での動作確認や将来のsandbox外テストができなくなるため)。
-      // ただし creatorUid が無い掲載は、支払い時の本人確認をスキップする
-      // (下記 verifyPiPayment 参照)。
-      console.warn('[companies/create] Pi accessToken検証に失敗:', e.message);
-    }
+  // ブラウザが自己申告する uid / username は使わず、/api/auth/pi で App Studio により
+  // 検証済みのセッション(X-Pi-Session ヘッダー)から得た uid / username だけを保存する。
+  const session = piAuth.getSession(req.get('x-pi-session'));
+  if (!session) {
+    return res.status(401).json({ error: 'Piでのサインインが必要です。サインインしてからもう一度お試しください。' });
   }
+  const creatorUid = session.uid;
+  const creatorUsername = session.username;
 
   const listing = {
     id: uuidv4(),
@@ -261,25 +267,6 @@ async function piApiRequest(pathSuffix, options = {}) {
   }
   if (!res.ok) {
     throw new Error(`Pi Platform API error (${res.status}): ${JSON.stringify(data)}`);
-  }
-  return data;
-}
-
-// ユーザーのアクセストークン(Pi.authenticate()で取得)を検証し、
-// 検証済みの {uid, username} を返す。掲載申込み時の本人確認に使う。
-async function piMeRequest(accessToken) {
-  const res = await fetch(`${PI_PLATFORM_BASE}/me`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  const text = await res.text();
-  let data;
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch (e) {
-    data = { raw: text };
-  }
-  if (!res.ok) {
-    throw new Error(`Pi /v2/me error (${res.status}): ${JSON.stringify(data)}`);
   }
   return data;
 }

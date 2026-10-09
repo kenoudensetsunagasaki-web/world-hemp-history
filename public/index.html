@@ -490,7 +490,7 @@ function isSafeHttpUrl(url){
 
 /* ---------------- Pi SDK ---------------- */
 let piUser = null;
-let piAccessToken = null; // サーバー側で /v2/me により検証するためのアクセストークン(申込者の本人確認用)
+let piSession = null; // /api/auth/pi でサーバーが発行したセッショントークン(Piの accessToken は保持しない)
 const SIGNIN_LABELS = {ja:'Piでサインイン',en:'Sign in with Pi',zh:'使用Pi登录',ko:'Pi로 로그인',es:'Iniciar sesión con Pi'};
 function updateSignInButton(){
   const btn = document.getElementById('piSignIn');
@@ -506,34 +506,35 @@ let piReady = false;
 async function initPi(){
   try{
     if(typeof Pi === 'undefined'){ showPiDiag('Pi SDK not loaded (open in Pi Browser)'); return; }
-    // sandboxフラグはサーバーの /api/config から取得する(.envのPI_SANDBOXを変更する
-    // だけで本番切替できるようにするため、ここではハードコードしない)。
-    // 万一/api/configが取得できない場合は、安全側としてsandbox: trueで初期化する。
-    let sandbox = true;
-    try{
-      const cfg = await fetch('/api/config').then(r => r.json());
-      if(typeof cfg.sandbox === 'boolean') sandbox = cfg.sandbox;
-    }catch(e){
-      console.warn('Failed to load /api/config, defaulting to sandbox mode:', e.message);
-    }
-    await Pi.init({ version: "2.0", sandbox });
+    // sandbox は指定しない(Pi SDK側で自動判定される)
+    await Pi.init({ version: "2.0" });
     piReady = true;
-    document.getElementById('piStatus').textContent = sandbox ? 'Pi Browser (sandbox)' : 'Pi Browser';
+    document.getElementById('piStatus').textContent = 'Pi Browser';
   }catch(e){ console.warn('Pi SDK init skipped:', e.message); showPiDiag('Pi init failed: ' + (e && e.message ? e.message : e)); }
 }
+// 1回のサインインにつき1回だけ、サーバー経由で App Studio にアクセストークンを渡して検証する。
+// 画面に出すユーザー名も、ブラウザ側の自己申告ではなくサーバーが返した検証済みの値を使う。
 async function piAuthenticate(){
   if(typeof Pi === 'undefined'){ showPiDiag('Pi SDK not loaded (open in Pi Browser)'); return null; }
   try{
     showPiDiag('');
     const authResult = await Pi.authenticate(['username','payments'], onIncompletePaymentFound);
-    piUser = authResult.user;
-    piAccessToken = authResult.accessToken;
-    document.getElementById('piStatus').textContent = `@${piUser.username}`;
+    const res = await fetch('/api/auth/pi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ accessToken: authResult.accessToken })
+    });
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok || !data.sessionToken || !data.user){
+      throw new Error(data.error || ('login failed (' + res.status + ')'));
+    }
+    piUser = data.user;
+    piSession = data.sessionToken;
+    document.getElementById('piStatus').textContent = piUser.username ? `@${piUser.username}` : 'Pi';
     updateSignInButton();
-    return authResult;
+    return data;
   }catch(e){
     console.error('Pi authenticate failed', e);
-    // 原因が分かるよう、画面にもエラー内容を表示する(例: 未検証ドメイン、Pi Browser以外での実行)
     let detail = (e && e.message) ? e.message : (typeof e === 'string' ? e : JSON.stringify(e));
     const embedded = (window.self !== window.top);
     showPiDiag('Sign-in failed: ' + detail + ' [embedded=' + embedded + ', origin=' + location.origin + ']');
@@ -741,21 +742,21 @@ document.getElementById('listingForm').addEventListener('submit', async (e) => {
   // 「申し込んだ人」と「支払った人」が同一Piユーザーであることをサーバー側で
   // 検証できるようにするため、掲載データを作成する前にPi認証を済ませ、
   // アクセストークンを一緒に送る(サーバーは /v2/me でこのトークンを検証する)。
-  if(!piUser){ await piAuthenticate(); }
-  if(!piUser || !piAccessToken){
+  if(!piUser || !piSession){ await piAuthenticate(); }
+  if(!piUser || !piSession){
     msg.style.color = 'crimson';
     msg.textContent = t.piAuthRequired;
     return;
   }
-  payload.piAccessToken = piAccessToken;
 
   try{
     const createRes = await fetch('/api/companies', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Pi-Session': piSession },
       body: JSON.stringify(payload)
     });
     const created = await createRes.json();
+    if(createRes.status === 401){ piUser = null; piSession = null; updateSignInButton(); }
     if(!createRes.ok){
       msg.style.color = 'crimson';
       msg.textContent = created.error || t.genericError;
