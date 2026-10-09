@@ -39,7 +39,8 @@
   .pi-status{font-size:0.78rem;color:var(--ink-muted);white-space:nowrap;}
   .pi-signin-btn{border:1px solid var(--border);background:var(--primary-dark);color:#fff;padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;}
   .pi-signin-btn[hidden]{display:none;}
-  .pi-diag{font-size:0.7rem;color:crimson;max-width:260px;word-break:break-word;}
+  .pi-diag{font-size:0.75rem;color:crimson;padding:0 20px;word-break:break-word;}
+  .pi-diag:not(:empty){padding:8px 20px;background:#fff3f3;border-bottom:1px solid #f3c9c9;}
   .lang-switch{display:flex;align-items:center;gap:5px;}
   .lang-switch svg{width:14px;height:14px;fill:var(--ink-muted);}
   #langSelect{border:1px solid var(--border);background:var(--surface);color:var(--ink);padding:5px 8px;border-radius:8px;font-size:0.8rem;cursor:pointer;}
@@ -181,10 +182,10 @@
       </div>
       <button type="button" class="pi-signin-btn" id="piSignIn">Pi Sign-in</button>
       <span class="pi-status" id="piStatus">Pi未接続</span>
-      <div class="pi-diag" id="piDiag"></div>
     </div>
   </div>
 </header>
+<div class="pi-diag" id="piDiag"></div>
 
 <section class="hero">
   <div class="hero-inner">
@@ -533,7 +534,9 @@ async function piAuthenticate(){
   }catch(e){
     console.error('Pi authenticate failed', e);
     // 原因が分かるよう、画面にもエラー内容を表示する(例: 未検証ドメイン、Pi Browser以外での実行)
-    showPiDiag('Sign-in failed: ' + (e && e.message ? e.message : JSON.stringify(e)));
+    let detail = (e && e.message) ? e.message : (typeof e === 'string' ? e : JSON.stringify(e));
+    const embedded = (window.self !== window.top);
+    showPiDiag('Sign-in failed: ' + detail + ' [embedded=' + embedded + ', origin=' + location.origin + ']');
     return null;
   }
 }
