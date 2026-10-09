@@ -37,6 +37,9 @@
   nav.main-nav a:hover{border-color:var(--accent);}
   .nav-right{display:flex;align-items:center;gap:12px;}
   .pi-status{font-size:0.78rem;color:var(--ink-muted);white-space:nowrap;}
+  .pi-signin-btn{border:1px solid var(--border);background:var(--primary-dark);color:#fff;padding:5px 12px;border-radius:999px;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .pi-signin-btn[hidden]{display:none;}
+  .pi-diag{font-size:0.7rem;color:crimson;max-width:260px;word-break:break-word;}
   .lang-switch{display:flex;align-items:center;gap:5px;}
   .lang-switch svg{width:14px;height:14px;fill:var(--ink-muted);}
   #langSelect{border:1px solid var(--border);background:var(--surface);color:var(--ink);padding:5px 8px;border-radius:8px;font-size:0.8rem;cursor:pointer;}
@@ -176,7 +179,9 @@
           <option value="es">Español</option>
         </select>
       </div>
+      <button type="button" class="pi-signin-btn" id="piSignIn">Pi Sign-in</button>
       <span class="pi-status" id="piStatus">Pi未接続</span>
+      <div class="pi-diag" id="piDiag"></div>
     </div>
   </div>
 </header>
@@ -485,9 +490,21 @@ function isSafeHttpUrl(url){
 /* ---------------- Pi SDK ---------------- */
 let piUser = null;
 let piAccessToken = null; // サーバー側で /v2/me により検証するためのアクセストークン(申込者の本人確認用)
+const SIGNIN_LABELS = {ja:'Piでサインイン',en:'Sign in with Pi',zh:'使用Pi登录',ko:'Pi로 로그인',es:'Iniciar sesión con Pi'};
+function updateSignInButton(){
+  const btn = document.getElementById('piSignIn');
+  if(!btn) return;
+  btn.textContent = SIGNIN_LABELS[currentLang] || SIGNIN_LABELS.en;
+  btn.hidden = !!piUser; // サインイン済みなら非表示
+}
+function showPiDiag(msg){
+  const el = document.getElementById('piDiag');
+  if(el) el.textContent = msg || '';
+}
+let piReady = false;
 async function initPi(){
   try{
-    if(typeof Pi === 'undefined'){ return; }
+    if(typeof Pi === 'undefined'){ showPiDiag('Pi SDK not loaded (open in Pi Browser)'); return; }
     // sandboxフラグはサーバーの /api/config から取得する(.envのPI_SANDBOXを変更する
     // だけで本番切替できるようにするため、ここではハードコードしない)。
     // 万一/api/configが取得できない場合は、安全側としてsandbox: trueで初期化する。
@@ -499,21 +516,34 @@ async function initPi(){
       console.warn('Failed to load /api/config, defaulting to sandbox mode:', e.message);
     }
     await Pi.init({ version: "2.0", sandbox });
+    piReady = true;
     document.getElementById('piStatus').textContent = sandbox ? 'Pi Browser (sandbox)' : 'Pi Browser';
-  }catch(e){ console.warn('Pi SDK init skipped:', e.message); }
+  }catch(e){ console.warn('Pi SDK init skipped:', e.message); showPiDiag('Pi init failed: ' + (e && e.message ? e.message : e)); }
 }
 async function piAuthenticate(){
-  if(typeof Pi === 'undefined'){ return null; }
+  if(typeof Pi === 'undefined'){ showPiDiag('Pi SDK not loaded (open in Pi Browser)'); return null; }
   try{
+    showPiDiag('');
     const authResult = await Pi.authenticate(['username','payments'], onIncompletePaymentFound);
     piUser = authResult.user;
     piAccessToken = authResult.accessToken;
     document.getElementById('piStatus').textContent = `@${piUser.username}`;
+    updateSignInButton();
     return authResult;
-  }catch(e){ console.error('Pi authenticate failed', e); return null; }
+  }catch(e){
+    console.error('Pi authenticate failed', e);
+    // 原因が分かるよう、画面にもエラー内容を表示する(例: 未検証ドメイン、Pi Browser以外での実行)
+    showPiDiag('Sign-in failed: ' + (e && e.message ? e.message : JSON.stringify(e)));
+    return null;
+  }
 }
 function onIncompletePaymentFound(payment){ console.log('未完了の支払いを検出:', payment); }
-initPi();
+initPi().then(() => { if(piReady) piAuthenticate(); });
+document.getElementById('piSignIn').addEventListener('click', async () => {
+  if(!piReady) await initPi();
+  await piAuthenticate();
+});
+updateSignInButton();
 
 /* ---------------- News ---------------- */
 async function loadNews(){
@@ -665,6 +695,7 @@ function applyLanguage(lang){
   renderStats();
   renderCtaBenefits();
   renderFooterLinks();
+  updateSignInButton();
 }
 
 document.getElementById('langSelect').value = currentLang;
