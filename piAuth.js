@@ -13,6 +13,7 @@ const crypto = require('crypto');
 const fetch = require('node-fetch');
 
 const APPSTUDIO_LOGIN_URL = 'https://backend.appstudio-u7cm9zhmha0ruwv8.piappengine.com/pi/auth/v1/login';
+const PI_ME_URL = 'https://api.minepi.com/v2/me';
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const MAX_SESSIONS = 5000;
 
@@ -36,26 +37,56 @@ function createPiAuth({ fetchImpl = fetch, now = () => Date.now(), origin = proc
       err.status = 400;
       throw err;
     }
-    const res = await fetchImpl(APPSTUDIO_LOGIN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // App Studio がアプリを特定できるよう、このアプリ自身のURLをOriginとして付ける
-        ...(origin ? { Origin: origin, Referer: origin + '/' } : {}),
-      },
-      body: JSON.stringify({ accessToken }),
-    });
-    const text = await res.text();
-    let data;
-    try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
-    if (!res.ok || !data.user || typeof data.user.uid !== 'string' || !data.user.uid) {
-      const snippet = (text || '').replace(/\s+/g, ' ').slice(0, 160); // 原因切り分け用(App Studioのエラー本文。トークンは含まれない)
-      const err = new Error(`Pi認証に失敗しました(App Studio: ${res.status}) ${snippet}`.trim());
+    // 1) まず App Studio で検証する(App Studio から開いたアプリのトークンはこちらで通る)。
+    let identity = null;
+    let appStudioFailure = '';
+    try {
+      const res = await fetchImpl(APPSTUDIO_LOGIN_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // App Studio がアプリを特定できるよう、このアプリ自身のURLをOriginとして付ける
+          ...(origin ? { Origin: origin, Referer: origin + '/' } : {}),
+        },
+        body: JSON.stringify({ accessToken }),
+      });
+      const text = await res.text();
+      let data;
+      try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
+      if (res.ok && data.user && typeof data.user.uid === 'string' && data.user.uid) {
+        identity = { uid: data.user.uid, username: typeof data.user.username === 'string' ? data.user.username : null };
+      } else {
+        const snippet = (text || '').replace(/\s+/g, ' ').slice(0, 160); // 原因切り分け用(トークンは含まれない)
+        appStudioFailure = `App Studio: ${res.status} ${snippet}`.trim();
+      }
+    } catch (e) {
+      appStudioFailure = `App Studio: ${e.message}`;
+    }
+
+    // 2) App Studio で検証できなかった場合(Pi Developer Portal に登録した Testnet アプリを
+    //    Develop から開いたときなど、トークンが App Studio のアプリのものではない場合)は、
+    //    Pi Platform の /v2/me で検証する。いずれの経路でも、検証済みの uid / username だけを使う。
+    if (!identity) {
+      try {
+        const res = await fetchImpl(PI_ME_URL, { headers: { Authorization: `Bearer ${accessToken}` } });
+        const text = await res.text();
+        let data;
+        try { data = text ? JSON.parse(text) : {}; } catch (e) { data = {}; }
+        if (res.ok && typeof data.uid === 'string' && data.uid) {
+          identity = { uid: data.uid, username: typeof data.username === 'string' ? data.username : null };
+        } else {
+          appStudioFailure += ` / Pi /v2/me: ${res.status}`;
+        }
+      } catch (e) {
+        appStudioFailure += ` / Pi /v2/me: ${e.message}`;
+      }
+    }
+    if (!identity) {
+      const err = new Error(`Pi認証に失敗しました(${appStudioFailure})`);
       err.status = 401;
       throw err;
     }
-    const uid = data.user.uid;
-    const username = typeof data.user.username === 'string' ? data.user.username : null;
+    const { uid, username } = identity;
     sweep();
     const sessionToken = crypto.randomBytes(32).toString('hex');
     sessions.set(sessionToken, { uid, username, expiresAt: now() + SESSION_TTL_MS });
